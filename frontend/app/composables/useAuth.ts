@@ -1,22 +1,27 @@
 export const useAuth = () => {
-    const token = useCookie<string | null>('access_token', {
-        sameSite: 'lax',
-    })
+    const token = useCookie<string | null>('access_token', { sameSite: 'lax' })
+    const { $supabase } = useNuxtApp() as any
 
     const login = async (email: string, password: string) => {
-        const config = useRuntimeConfig()
-
-        const res = await $fetch<{ accessToken: string }>(`${config.public.apiBase}/api/auth/login`, {
-            method: 'POST',
-            body: { email, password },
-        })
-
-        token.value = res.accessToken
+        const { data, error } = await $supabase.auth.signInWithPassword({ email, password })
+        if (error) throw error
+        token.value = data.session?.access_token ?? null
     }
 
-    const logout = () => {
+    const logout = async () => {
+        await $supabase.auth.signOut()
         token.value = null
     }
 
-    return { token, login, logout }
+    const syncSessionToCookie = async () => {
+        // SSRではSupabaseクライアントが存在しないため何もしない
+        if (process.server) return
+
+        const { $supabase } = useNuxtApp() as any
+        const { data } = await $supabase.auth.getSession()
+        token.value = data.session?.access_token ?? null
+    }
+
+
+    return { token, login, logout, syncSessionToCookie }
 }
