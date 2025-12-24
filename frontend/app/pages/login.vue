@@ -1,23 +1,23 @@
 <template>
-    <main style="max-width: 360px; margin: 48px auto; padding: 16px;">
+    <main class="login-root">
         <h1>ログイン</h1>
 
-        <form @submit.prevent="onSubmit" style="display: grid; gap: 12px; margin-top: 16px;">
-            <label>
+        <form @submit.prevent="onSubmit" class="login-form">
+            <label class="login-label">
                 メール
-                <input v-model="email" type="email" required style="width: 100%; padding: 8px;" />
+                <input v-model="email" type="email" required class="login-input" />
             </label>
 
-            <label>
+            <label class="login-label">
                 パスワード
-                <input v-model="password" type="password" required style="width: 100%; padding: 8px;" />
+                <input v-model="password" type="password" required class="login-input" />
             </label>
 
-            <button type="submit" :disabled="loading" style="padding: 10px;">
+            <button type="submit" :disabled="loading" class="login-button">
                 {{ loading ? '送信中...' : 'ログイン' }}
             </button>
 
-            <p v-if="error" style="color: red;">{{ error }}</p>
+            <p v-if="error" class="login-error">{{ error }}</p>
         </form>
     </main>
 </template>
@@ -44,3 +44,35 @@ const onSubmit = async () => {
     }
 }
 </script>
+
+<style scoped>
+.login-root {
+    max-width: 360px;
+    margin: 48px auto;
+    padding: 16px;
+}
+
+.login-form {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.login-label {
+    display: block;
+}
+
+.login-input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.login-button {
+    padding: 10px;
+}
+
+.login-error {
+    color: red;
+}
+</style>
