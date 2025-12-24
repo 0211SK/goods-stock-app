@@ -1,9 +1,9 @@
 <template>
     <section class="genre">
-        <!-- 検索（一覧と同じ幅・中央揃え） -->
+        <!-- 作品検索（一覧と同じ幅・中央揃え） -->
         <div class="genre__search">
             <div class="genre__search-inner">
-                <input v-model="q" type="text" class="genre__input" placeholder="ジャンル検索" autocomplete="off" />
+                <input v-model="q" type="text" class="genre__input" placeholder="作品検索" autocomplete="off" />
                 <button v-if="q" type="button" class="genre__clear" aria-label="検索条件をクリア" @click="q = ''">
                     ×
                 </button>
@@ -12,7 +12,7 @@
 
         <!-- 一覧 -->
         <div v-if="grouped.length === 0" class="genre__empty">
-            ジャンルが存在しません
+            作品が存在しません
         </div>
 
         <div v-else class="genre__groups">
@@ -33,11 +33,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { GOJUON } from '~/constants/gojuon'
-
-type Genre = { id: number; name: string; nameKana?: string | null }
+import type { WorkItem } from '~/composables/useWorks'
 
 const props = defineProps<{
-    genres: Genre[]
+    genres: WorkItem[]
 }>()
 
 const q = ref('')
@@ -61,7 +60,7 @@ const filtered = computed(() => {
 })
 
 const grouped = computed(() => {
-    const map = new Map<string, Genre[]>()
+    const map = new Map<string, WorkItem[]>()
 
     for (const g of filtered.value) {
         const key = groupKeyByKana(g.nameKana?.slice(0, 1))

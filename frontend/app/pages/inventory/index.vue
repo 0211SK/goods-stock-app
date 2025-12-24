@@ -1,6 +1,6 @@
 <template>
     <section class="page">
-        <PageTitle title="グッズジャンル一覧" />
+        <PageTitle title="グッズ作品一覧" />
         <GenreSection :genres="genres" />
     </section>
 </template>
@@ -8,12 +8,11 @@
 <script setup lang="ts">
 import PageTitle from '~/components/common/PageTitle.vue'
 import GenreSection from '~/components/inventory/GenreSection.vue'
+import { onMounted } from 'vue'
 
-// ここは後でAPIに置き換えてください
-type Genre = { id: number; name: string; nameKana?: string | null }
+const { items: genres, fetchWorks } = useWorks()
 
-const genres = ref<Genre[]>([
-    { id: 1, name: 'テスト作品名', nameKana: 'てすとさくひんめい' },
-    { id: 2, name: 'テスト作品B', nameKana: 'てすとさくひんびー' },
-])
+onMounted(() => {
+    fetchWorks({ page: 1, size: 200 })
+})
 </script>
