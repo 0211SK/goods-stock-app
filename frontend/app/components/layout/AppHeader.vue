@@ -1,74 +1,116 @@
 <template>
     <header class="app-header">
-        <div class="app-header__left">
-            <NuxtLink to="/inventory" class="app-header__logo">
+        <!-- 上段 -->
+        <div class="header-top">
+            <NuxtLink to="/inventory" class="logo">
                 グッズ在庫管理
+            </NuxtLink>
+
+            <NuxtLink to="/login" class="login-link">
+                ログイン
             </NuxtLink>
         </div>
 
-        <nav class="app-header__nav">
-            <NuxtLink to="/inventory" class="app-header__nav-link">
-                在庫一覧
-            </NuxtLink>
-            <NuxtLink to="/wishlist" class="app-header__nav-link">
-                欲しいもの
-            </NuxtLink>
-            <NuxtLink to="/stats" class="app-header__nav-link">
-                月次集計
-            </NuxtLink>
-            <NuxtLink to="/settings" class="app-header__nav-link">
-                設定
-            </NuxtLink>
-            <!-- ログイン状態によってログイン/ログアウトを切り替える予定 -->
-            <NuxtLink to="/login" class="app-header__nav-link app-header__nav-link--sub">
-                ログイン
-            </NuxtLink>
-        </nav>
+        <!-- 下段：メイン操作（PC / SP 共通） -->
+        <div class="header-main">
+            <div class="tabs">
+                <NuxtLink to="/inventory" class="tab" :class="{ active: route.path.startsWith('/inventory') }">
+                    グッズ検索
+                </NuxtLink>
+                <NuxtLink to="/wishlist" class="tab" :class="{ active: route.path.startsWith('/wishlist') }">
+                    欲しいもの
+                </NuxtLink>
+                <NuxtLink to="/stats" class="tab" :class="{ active: route.path.startsWith('/stats') }">
+                    支出予定額
+                </NuxtLink>
+            </div>
+        </div>
     </header>
 </template>
 
 <script setup lang="ts">
+import { useRoute } from "vue-router"
+
+const route = useRoute()
 </script>
 
 <style scoped>
+/* ===== 共通 ===== */
 .app-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1.5rem;
     border-bottom: 1px solid #e5e7eb;
-    background-color: #ffffff;
+    background: #fff;
 }
 
-.app-header__logo {
-    font-weight: 700;
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+}
+
+.logo {
     font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    text-decoration: none;
+}
+
+.login-link {
+    font-size: 14px;
+    color: #374151;
+    text-decoration: none;
+}
+
+/* ===== メイン操作 ===== */
+.header-main {
+    display: flex;
+    gap: 16px;
+    padding: 12px 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.tabs {
+    display: flex;
+    border: 1px solid #d1d5db;
+    flex: 0 0 auto;
+}
+
+.tab {
+    padding: 20px 70px;
+    font-size: 14px;
     text-decoration: none;
     color: #111827;
+    border-right: 1px solid #d1d5db;
+    background: #fff;
 }
 
-.app-header__nav {
-    display: flex;
-    gap: 1rem;
+.tab:last-child {
+    border-right: none;
 }
 
-.app-header__nav-link {
-    text-decoration: none;
-    color: #374151;
-    font-size: 14px;
-    padding: 0.25rem 0.5rem;
-    border-radius: 999px;
+.tab.active {
+    outline: 2px solid #111;
+    outline-offset: -2px;
+    font-weight: 700;
 }
 
-/* NuxtLink は router-link-active クラスが付くので、そこを装飾 */
-.app-header__nav-link.router-link-active {
-    background-color: #2563eb11;
-    color: #2563eb;
-    font-weight: 600;
-}
+/* ===== スマホ調整 ===== */
+@media (max-width: 767px) {
+    .header-main {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
 
-.app-header__nav-link--sub {
-    font-size: 13px;
-    opacity: 0.8;
+    .tabs {
+        width: 100%;
+    }
+
+    .tab {
+        flex: 1;
+        text-align: center;
+        padding: 10px 16px;
+    }
 }
 </style>
