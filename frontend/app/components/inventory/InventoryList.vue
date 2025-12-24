@@ -1,25 +1,48 @@
 <template>
-    <table class="inventory-list">
-        <thead>
-            <tr>
-                <th>作品名</th>
-                <th>グッズ名</th>
-                <th>種類</th>
-                <th>個数</th>
-                <th>金額</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>サンプル作品</td>
-                <td>缶バッチA</td>
-                <td>缶バッチ</td>
-                <td>3</td>
-                <td>500円</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="list">
+        <div v-if="pending">読み込み中…</div>
+        <div v-else-if="error">取得に失敗しました</div>
+        <div v-else>
+            <pre>{{ data }}</pre>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
+import type { InventoryQuery } from '~/types/inventory'
+import { computed } from 'vue'
+// useAuth は既存のものを想定（tokenを取り出せるようにしてください）
+import { useAuth } from '~/composables/useAuth'
+
+const props = defineProps<{
+    workId: number
+    filters: InventoryQuery
+}>()
+const { token } = useAuth()
+
+const query = computed(() => ({
+    workId: props.workId, // ここで必ず付与
+    itemTypeId: props.filters.itemTypeId ?? undefined,
+    keyword: props.filters.keyword ?? undefined,
+    page: props.filters.page ?? 1,
+    size: props.filters.size ?? 20,
+    sort: props.filters.sort ?? 'purchaseDateDesc',
+}))
+
+const { data, pending, error, refresh } = await useFetch('/api/owned-items', {
+    baseURL: 'http://localhost:8080',
+    query,
+    headers: computed(() => ({
+        Authorization: token.value ? `Bearer ${token.value}` : '',
+    })),
+    watch: [query, token],
+})
 </script>
+
+<style scoped>
+.list {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+</style>
