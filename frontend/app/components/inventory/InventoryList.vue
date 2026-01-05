@@ -4,7 +4,8 @@
         <div v-else-if="error" class="error">取得に失敗しました</div>
         <div v-else>
             <div class="grid">
-                <article v-for="item in items" :key="item.id" class="card">
+                <article v-for="item in items" :key="item.id" class="card" role="link" @click="goToDetail(item)"
+                    tabindex="0">
                     <div class="thumb">
                         <img v-if="item.imageUrl" :src="item.imageUrl" alt="" />
                         <div v-else class="no-image">画像なし</div>
@@ -22,6 +23,7 @@
 import type { InventoryQuery } from '~/types/inventory'
 import { computed, watchEffect } from 'vue'
 import { useOwnedItems } from '~/composables/useOwnedItems'
+import { useRouter } from '#imports'
 
 const props = defineProps<{
     workId: number | null
@@ -38,6 +40,16 @@ const query = computed(() => ({
 }))
 
 const { items, loading, error, fetchList } = useOwnedItems()
+const router = useRouter()
+
+const goToDetail = (item: any) => {
+    const wid = props.workId ?? item.workId
+    if (wid == null) {
+        void router.push(`/inventory/${item.id}`)
+        return
+    }
+    void router.push(`/inventory/${wid}/${item.id}`)
+}
 
 watchEffect(() => {
     // fetch when query changes

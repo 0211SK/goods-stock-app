@@ -72,7 +72,23 @@ export const useOwnedItems = () => {
         }
     }
 
-    return { items, loading, error, meta, fetchList, create }
+    const fetchDetail = async (id: number) => {
+        loading.value = true
+        error.value = null
+        try {
+            const { $api } = useNuxtApp()
+            const res = await $api<OwnedItem>(`/api/v1/owned-items/${id}`)
+            return res
+        } catch (e: any) {
+            console.error('fetchOwnedItemDetail failed', e)
+            error.value = e?.message ?? String(e)
+            throw e
+        } finally {
+            loading.value = false
+        }
+    }
+
+    return { items, loading, error, meta, fetchList, create, fetchDetail }
 }
 
 export default useOwnedItems
