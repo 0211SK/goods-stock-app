@@ -1,17 +1,20 @@
 <template>
     <div class="filterbar">
-        <div class="filterbar__row">
-            <select class="filterbar__select" :value="filters.itemTypeId ?? ''" @change="onItemTypeChange">
-                <option value="">種類：すべて</option>
-                <option v-for="t in itemTypes" :key="t.id" :value="t.id">{{ t.name }}</option>
-            </select>
+        <div class="box">
+            <div class="work-title" v-if="workName">{{ workName }}</div>
+            <div class="filterbar__row">
+                <select class="filterbar__select" :value="filters.itemTypeId ?? ''" @change="onItemTypeChange">
+                    <option value="">種類：すべて</option>
+                    <option v-for="t in itemTypes" :key="t.id" :value="t.id">{{ t.name }}</option>
+                </select>
 
-            <select class="filterbar__select" :value="filters.sort ?? 'purchaseDateDesc'" @change="onSortChange">
-                <option value="purchaseDateDesc">購入日（新しい順）</option>
-                <option value="purchaseDateAsc">購入日（古い順）</option>
-                <option value="createdAtDesc">登録日（新しい順）</option>
-                <option value="createdAtAsc">登録日（古い順）</option>
-            </select>
+                <select class="filterbar__select" :value="filters.sort ?? 'purchaseDateDesc'" @change="onSortChange">
+                    <option value="purchaseDateDesc">購入日（新しい順）</option>
+                    <option value="purchaseDateAsc">購入日（古い順）</option>
+                    <option value="createdAtDesc">登録日（新しい順）</option>
+                    <option value="createdAtAsc">登録日（古い順）</option>
+                </select>
+            </div>
         </div>
     </div>
 </template>
@@ -21,6 +24,7 @@ import type { InventoryQuery } from '~/types/inventory'
 
 const props = defineProps<{
     filters: InventoryQuery
+    workName?: string | null
 }>()
 
 const emit = defineEmits<{
@@ -59,6 +63,14 @@ const applyKeyword = () => {
 .filterbar {
     display: flex;
     justify-content: center;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: min(980px, 100%);
+    padding: 12px 0;
 }
 
 .filterbar__row {

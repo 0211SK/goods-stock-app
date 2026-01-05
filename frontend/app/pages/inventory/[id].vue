@@ -1,15 +1,15 @@
 <template>
     <section class="page">
-        <PageTitle title="在庫詳細" />
+        <PageTitle title="グッズ一覧" />
 
-        <InventoryFilterBar :filters="filters" @update:filters="updateFilters" />
+        <InventoryFilterBar :filters="filters" :workName="workName" @update:filters="updateFilters" />
 
         <InventoryList :workId="workId" :filters="filters" />
     </section>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from '#imports'
 import PageTitle from '~/components/common/PageTitle.vue'
 import InventoryFilterBar from '~/components/inventory/InventoryFilterBar.vue'
@@ -19,17 +19,30 @@ import type { InventoryQuery, InventorySort } from '~/types/inventory'
 const route = useRoute()
 const router = useRouter()
 
-const workId = computed(() => Number(route.params.workId))
-
 const toNum = (v: unknown) => {
     const n = Number(v)
     return Number.isFinite(n) ? n : null
 }
 
+const workId = computed<number | null>(() => toNum(route.params.id))
+
+import { useWorks } from '~/composables/useWorks'
+const { items: works, fetchWorks } = useWorks()
+
+onMounted(() => {
+    void fetchWorks({ page: 1, size: 200 })
+})
+
+const workName = computed(() => {
+    if (!workId.value) return null
+    const w = works.value.find((x: any) => x.id === workId.value)
+    return w ? w.name : null
+})
+
 const filters = computed<InventoryQuery>(() => {
     const q = route.query
     return {
-        // workId は path param で固定するので、query には入れません
+        // workId は path param で固定するので、query には入れない
         itemTypeId: q.itemTypeId ? toNum(q.itemTypeId) : null,
         keyword: typeof q.keyword === 'string' ? q.keyword : null,
         page: q.page ? toNum(q.page) : 1,
