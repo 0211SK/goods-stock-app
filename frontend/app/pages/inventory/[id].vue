@@ -1,10 +1,13 @@
 <template>
     <section class="page">
-        <PageTitle title="グッズ一覧" />
+        <div class="box">
+            <div class="box2">
+                <PageTitle title="グッズ一覧" />
 
-        <InventoryFilterBar :filters="filters" :workName="workName" @update:filters="updateFilters" />
-
-        <InventoryList :workId="workId" :filters="filters" />
+                <InventoryFilterBar :filters="filters" :workName="workName" @update:filters="updateFilters" />
+            </div>
+            <InventoryList :workId="workId" :filters="filters" />
+        </div>
     </section>
 </template>
 
@@ -69,3 +72,12 @@ const updateFilters = async (partial: InventoryQuery) => {
     await router.push({ query: cleanQuery(next as any) })
 }
 </script>
+
+<style scoped>
+.box2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 18px 12px;
+}
+</style>

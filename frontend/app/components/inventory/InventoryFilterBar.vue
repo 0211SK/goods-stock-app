@@ -1,7 +1,7 @@
 <template>
     <div class="filterbar">
         <div class="box">
-            <div class="work-title" v-if="workName">{{ workName }}</div>
+            <h3 class="work-title" v-if="workName">{{ workName }}</h3>
             <div class="filterbar__row">
                 <select class="filterbar__select" :value="filters.itemTypeId ?? ''" @change="onItemTypeChange">
                     <option value="">種類：すべて</option>
@@ -21,6 +21,9 @@
 
 <script setup lang="ts">
 import type { InventoryQuery } from '~/types/inventory'
+import { onMounted } from 'vue'
+import { useItemTypes } from '~/composables/useItemTypes'
+
 
 const props = defineProps<{
     filters: InventoryQuery
@@ -31,11 +34,11 @@ const emit = defineEmits<{
     (e: 'update:filters', v: InventoryQuery): void
 }>()
 
-// 例：後でAPIから取得に置き換え
-const itemTypes = ref<{ id: number; name: string }[]>([
-    { id: 1, name: '缶バッチ' },
-    { id: 2, name: 'アクスタ' },
-])
+const { items: itemTypes, loading: typesLoading, error: typesError, fetchList: fetchItemTypes } = useItemTypes()
+
+onMounted(() => {
+    void fetchItemTypes({ page: 1, size: 200 })
+})
 
 const localKeyword = ref(props.filters.keyword ?? '')
 
