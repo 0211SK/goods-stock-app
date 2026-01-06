@@ -23,6 +23,9 @@
                 <NuxtLink to="/stats" class="tab" :class="{ active: route.path.startsWith('/stats') }">
                     支出予定額
                 </NuxtLink>
+                <NuxtLink to="/settings" class="tab" :class="{ active: route.path.startsWith('/settings') }">
+                    設定
+                </NuxtLink>
             </div>
         </div>
     </header>
