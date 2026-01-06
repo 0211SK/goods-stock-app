@@ -23,6 +23,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+    layout: 'auth'
+})
+
 const email = ref('test@example.com')
 const password = ref('password123')
 const loading = ref(false)
@@ -48,14 +52,24 @@ const onSubmit = async () => {
 <style scoped>
 .login-root {
     max-width: 360px;
-    margin: 48px auto;
+    margin: 0 auto;
     padding: 16px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-root h1 {
+    margin-bottom: 24px;
+    text-align: center;
 }
 
 .login-form {
     display: grid;
     gap: 12px;
-    margin-top: 16px;
+    width: 100%;
 }
 
 .login-label {
@@ -74,5 +88,6 @@ const onSubmit = async () => {
 
 .login-error {
     color: red;
+    text-align: center;
 }
 </style>

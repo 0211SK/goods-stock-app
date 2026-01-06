@@ -6,9 +6,9 @@
                 グッズ在庫管理
             </NuxtLink>
 
-            <NuxtLink to="/login" class="login-link">
-                ログイン
-            </NuxtLink>
+            <button @click="handleLogout" class="logout-button">
+                ログアウト
+            </button>
         </div>
 
         <!-- 下段：メイン操作（PC / SP 共通） -->
@@ -29,9 +29,17 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 
 const route = useRoute()
+const router = useRouter()
+const { logout } = useAuth()
+
+const handleLogout = async () => {
+    await logout()
+    // ページ全体をリロードしてキャッシュをクリア
+    window.location.href = '/login'
+}
 </script>
 
 <style scoped>
@@ -55,10 +63,23 @@ const route = useRoute()
     text-decoration: none;
 }
 
-.login-link {
-    font-size: 14px;
-    color: #374151;
-    text-decoration: none;
+.logout-button {
+    padding: 6px 12px;
+    font-size: 10px;
+    color: #fff;
+    background: #dc2626;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+    background: #b91c1c;
+}
+
+.logout-button:active {
+    background: #991b1b;
 }
 
 /* ===== メイン操作 ===== */
