@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import PageTitle from '~/components/common/PageTitle.vue'
 import GenreSection from '~/components/inventory/GenreSection.vue'
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from '#imports'
 import { useWorks } from '~/composables/useWorks'
 
@@ -30,27 +30,28 @@ const goCreate = () => {
  * フッターに追加ボタンを設定
  * useStateを使ってグローバルステートに設定
  */
-const extraButton = useState<{
+const extraButtons = useState<Array<{
     label: string
     icon: string
     onClick: () => void
-} | null>('footerExtraButton', () => null)
+    class?: string
+}>>('footerExtraButtons', () => [])
 
 // ページ読み込み時に作品一覧を取得し、フッターボタンを設定
 onMounted(() => {
     void fetchWorks({ page: 1, size: 200 })
 
     // フッターに「データ登録」ボタンを追加
-    extraButton.value = {
+    extraButtons.value = [{
         label: 'データ登録',
         icon: '➕',
         onClick: goCreate
-    }
+    }]
 })
 
-// ページを離れる時にボタンをクリア
-onUnmounted(() => {
-    extraButton.value = null
+// ページを離れる前にボタンをクリア
+onBeforeUnmount(() => {
+    extraButtons.value = []
 })
 </script>
 

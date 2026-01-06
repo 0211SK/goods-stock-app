@@ -28,16 +28,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute } from '#imports'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute, useRouter } from '#imports'
 import PageTitle from '~/components/common/PageTitle.vue'
 import { useOwnedItems } from '~/composables/useOwnedItems'
 
 const route = useRoute()
+const router = useRouter()
 const id = Number(route.params.id)
+const workId = Number(route.params.workId)
 
 const item = ref<any | null>(null)
 const { loading, error, fetchDetail } = useOwnedItems()
+
+/**
+ * 編集ページへ遷移
+ */
+const goEdit = () => {
+    void router.push(`/inventory/${workId}/${id}/edit`)
+}
+
+/**
+ * 削除処理
+ */
+const deleteItem = () => {
+    if (confirm('本当に削除しますか？')) {
+        // TODO: 削除API実装後に処理を追加
+        alert('削除機能は実装予定です')
+    }
+}
+
+/**
+ * フッターに追加ボタンを設定
+ */
+const extraButtons = useState<Array<{
+    label: string
+    icon: string
+    onClick: () => void
+    class?: string
+}>>('footerExtraButtons', () => [])
 
 onMounted(async () => {
     try {
@@ -45,6 +74,27 @@ onMounted(async () => {
     } catch (e) {
         // error is handled inside composable; nothing extra to do
     }
+
+    // フッターに編集・削除ボタンを追加
+    extraButtons.value = [
+        {
+            label: '編集',
+            icon: '✏️',
+            onClick: goEdit,
+            class: 'footer-btn--edit'
+        },
+        {
+            label: '削除',
+            icon: '🗑️',
+            onClick: deleteItem,
+            class: 'footer-btn--delete'
+        }
+    ]
+})
+
+// ページを離れる前にボタンをクリア
+onBeforeUnmount(() => {
+    extraButtons.value = []
 })
 </script>
 
