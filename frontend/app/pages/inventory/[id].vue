@@ -35,9 +35,14 @@ const { items: works, fetchWorks } = useWorks()
 
 /**
  * 新規登録ページへ遷移
+ * 現在の作品IDをクエリパラメータとして渡す
  */
 const goToNew = () => {
-    void router.push('/inventory/new')
+    if (workId.value) {
+        void router.push(`/inventory/new?workId=${workId.value}`)
+    } else {
+        void router.push('/inventory/new')
+    }
 }
 
 // フッターに登録ボタンを追加

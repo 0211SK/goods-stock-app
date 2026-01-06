@@ -4,14 +4,14 @@
         <PageTitle title="在庫登録" />
 
         <!-- 在庫登録フォームコンポーネント -->
-        <InventoryForm :works="works" :item-types="itemTypes" :submitting="submitting" :error-message="errorMessage"
-            @submit="onSubmit" @cancel="cancel" />
+        <InventoryForm :initial-data="initialData" :works="works" :item-types="itemTypes" :submitting="submitting"
+            :error-message="errorMessage" @submit="onSubmit" @cancel="cancel" />
     </section>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from '#imports'
+import { ref, onMounted, computed } from 'vue'
+import { useRouter, useRoute } from '#imports'
 import PageTitle from '~/components/common/PageTitle.vue'
 import InventoryForm, { type InventoryFormData } from '~/components/inventory/InventoryForm.vue'
 import { useWorks } from '~/composables/useWorks'
@@ -20,6 +20,7 @@ import { useOwnedItems } from '~/composables/useOwnedItems'
 
 // ルーターと各種コンポーザブルの初期化
 const router = useRouter()
+const route = useRoute()
 const { items: works, fetchWorks } = useWorks()                      // 作品一覧の取得用
 const { items: itemTypes, fetchList: fetchItemTypes } = useItemTypes()  // 種類一覧の取得用
 const { create } = useOwnedItems()                                   // 在庫登録用
@@ -27,7 +28,20 @@ const { create } = useOwnedItems()                                   // 在庫�
 // フォームの状態管理
 const submitting = ref(false)           // API送信中フラグ
 const errorMessage = ref<string | null>(null)  // エラーメッセージ
-
+/**
+ * クエリパラメータからworkIdを取得して初期値を設定
+ * グッズ一覧画面から遷移した場合、作品が自動選択される
+ */
+const initialData = computed(() => {
+    const workIdParam = route.query.workId
+    if (workIdParam) {
+        const workId = Number(workIdParam)
+        if (Number.isFinite(workId)) {
+            return { workId }
+        }
+    }
+    return undefined
+})
 // ページ読み込み時に作品と種類の一覧を取得
 onMounted(() => {
     void fetchWorks({ page: 1, size: 200 })
