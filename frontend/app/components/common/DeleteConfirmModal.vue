@@ -21,6 +21,16 @@
             </div>
         </div>
     </div>
+
+    <!-- 削除失敗モーダル -->
+    <div v-if="showErrorModal" class="modal-overlay" @click="$emit('close-error')">
+        <div class="modal-content" @click.stop>
+            <p class="modal-message error">{{ errorMessage || '削除に失敗しました' }}</p>
+            <div class="modal-buttons">
+                <button class="btn-error" @click="$emit('close-error')">OK</button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -36,8 +46,12 @@ defineProps<{
     showDeleteModal: boolean
     /** 削除成功モーダルの表示状態 */
     showSuccessModal: boolean
+    /** 削除失敗モーダルの表示状態 */
+    showErrorModal: boolean
     /** 削除処理中フラグ */
     deleting: boolean
+    /** エラーメッセージ */
+    errorMessage?: string
 }>()
 
 // イベント定義
@@ -48,6 +62,8 @@ defineEmits<{
     cancel: []
     /** 成功モーダルを閉じる時に発火 */
     'close-success': []
+    /** エラーモーダルを閉じる時に発火 */
+    'close-error': []
 }>()
 </script>
 
@@ -140,6 +156,27 @@ defineEmits<{
 
 .modal-message.success {
     color: #4caf50;
+
+    .modal-message.error {
+        color: #d32f2f;
+        font-weight: 500;
+    }
+
+    .btn-error {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        background-color: #f44336;
+        color: white;
+    }
+
+    .btn-error:hover {
+        background-color: #d32f2f;
+    }
+
     font-weight: 500;
 }
 </style>

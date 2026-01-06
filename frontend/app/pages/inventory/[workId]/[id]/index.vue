@@ -24,10 +24,11 @@
         </div>
         <div v-else>データが見つかりません。</div>
 
-        <!-- 削除確認・成功モーダル -->
+        <!-- 削除確認・成功・失敗モーダル -->
         <DeleteConfirmModal :show-delete-modal="showDeleteModal" :show-success-modal="showSuccessModal"
-            :deleting="deleting" @confirm="confirmDelete" @cancel="showDeleteModal = false"
-            @close-success="closeSuccessModal" />
+            :show-error-modal="showErrorModal" :error-message="deleteErrorMessage" :deleting="deleting"
+            @confirm="confirmDelete" @cancel="showDeleteModal = false" @close-success="closeSuccessModal"
+            @close-error="showErrorModal = false" />
     </section>
 </template>
 
@@ -50,6 +51,8 @@ const { loading, error, fetchDetail, deleteItem: deleteItemApi } = useOwnedItems
 const { getImageUrl } = useImageUpload()
 const showDeleteModal = ref(false)
 const showSuccessModal = ref(false)
+const showErrorModal = ref(false)
+const deleteErrorMessage = ref('')
 const deleting = ref(false)
 
 /**
@@ -79,7 +82,8 @@ const confirmDelete = async () => {
     } catch (e: any) {
         // エラー時はモーダルを閉じてエラーメッセージを表示
         showDeleteModal.value = false
-        alert('削除に失敗しました: ' + (e?.message || '不明なエラー'))
+        deleteErrorMessage.value = e?.message || '削除に失敗しました'
+        showErrorModal.value = true
     } finally {
         deleting.value = false
     }

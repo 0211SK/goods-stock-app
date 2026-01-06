@@ -169,8 +169,10 @@ export const useOwnedItems = () => {
         } catch (e: any) {
             // エラー時はエラーメッセージを保存して例外を再スロー
             console.error('deleteOwnedItem failed', e)
-            error.value = e?.message ?? String(e)
-            throw e
+            // バックエンドからのエラーメッセージを取得
+            const errorMessage = e?.data?.message || e?.message || String(e)
+            error.value = errorMessage
+            throw new Error(errorMessage)
         } finally {
             loading.value = false
         }
