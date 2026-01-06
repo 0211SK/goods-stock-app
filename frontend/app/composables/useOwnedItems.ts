@@ -152,8 +152,32 @@ export const useOwnedItems = () => {
         }
     }
 
+    /**
+     * 所有アイテムを削除
+     * @param id アイテムID
+     * @returns 削除成功レスポンス
+     * @throws API呼び出しエラー時は例外をスロー
+     */
+    const deleteItem = async (id: number) => {
+        loading.value = true
+        error.value = null
+        try {
+            // DELETEメソッドで削除リクエストを送信
+            const { $api } = useNuxtApp()
+            const res = await $api<{ success: boolean; message: string }>(`/api/v1/owned-items/${id}`, { method: 'DELETE' })
+            return res
+        } catch (e: any) {
+            // エラー時はエラーメッセージを保存して例外を再スロー
+            console.error('deleteOwnedItem failed', e)
+            error.value = e?.message ?? String(e)
+            throw e
+        } finally {
+            loading.value = false
+        }
+    }
+
     // 外部から使用する関数と状態を公開
-    return { items, loading, error, meta, fetchList, create, fetchDetail, update }
+    return { items, loading, error, meta, fetchList, create, fetchDetail, update, deleteItem }
 }
 
 export default useOwnedItems
