@@ -32,8 +32,12 @@
                         <input id="name" v-model="formData.name" type="text" required placeholder="作品名を入力" />
                     </div>
                     <div class="form-group">
-                        <label for="nameKana">よみがな</label>
-                        <input id="nameKana" v-model="formData.nameKana" type="text" placeholder="よみがなを入力（任意）" />
+                        <label for="nameKana">よみがな *</label>
+                        <input id="nameKana" v-model="formData.nameKana" type="text" required placeholder="よみがなを入力" />
+                    </div>
+                    <div class="form-group">
+                        <label for="memo">メモ</label>
+                        <textarea id="memo" v-model="formData.memo" rows="3" placeholder="メモを入力（任意）"></textarea>
                     </div>
                     <div class="form-buttons">
                         <button type="button" class="btn-cancel" :disabled="loading" @click="closeFormModal">
@@ -47,10 +51,11 @@
             </div>
         </div>
 
-        <!-- 削除確認・成功モーダル -->
+        <!-- 削除確認・成功・失敗モーダル -->
         <DeleteConfirmModal :show-delete-modal="showDeleteModal" :show-success-modal="showSuccessModal"
-            :deleting="deleting" @confirm="confirmDelete" @cancel="showDeleteModal = false"
-            @close-success="closeSuccessModal" />
+            :show-error-modal="showErrorModal" :error-message="deleteErrorMessage" :deleting="deleting"
+            @confirm="confirmDelete" @cancel="showDeleteModal = false" @close-success="closeSuccessModal"
+            @close-error="closeErrorModal" />
     </section>
 </template>
 
@@ -65,13 +70,16 @@ const { items, loading, error, fetchWorks, createWork, updateWork, deleteWork } 
 const showFormModal = ref(false)
 const showDeleteModal = ref(false)
 const showSuccessModal = ref(false)
+const showErrorModal = ref(false)
+const deleteErrorMessage = ref('')
 const deleting = ref(false)
 const editingWork = ref<WorkItem | null>(null)
 const deletingWork = ref<WorkItem | null>(null)
 
 const formData = ref({
     name: '',
-    nameKana: ''
+    nameKana: '',
+    memo: ''
 })
 
 /**
@@ -79,7 +87,7 @@ const formData = ref({
  */
 const openAddModal = () => {
     editingWork.value = null
-    formData.value = { name: '', nameKana: '' }
+    formData.value = { name: '', nameKana: '', memo: '' }
     showFormModal.value = true
 }
 
@@ -90,7 +98,8 @@ const openEditModal = (work: WorkItem) => {
     editingWork.value = work
     formData.value = {
         name: work.name,
-        nameKana: work.nameKana || ''
+        nameKana: work.nameKana || '',
+        memo: work.memo || ''
     }
     showFormModal.value = true
 }
@@ -99,6 +108,14 @@ const openEditModal = (work: WorkItem) => {
  * フォームを送信
  */
 const submitForm = async () => {
+    // よみがなのバリデーション（ひらがなと伸ばし棒のみ許可）
+    const hiraganaPattern = /^[\u3040-\u309F\u30FC]+$/
+    if (formData.value.nameKana && !hiraganaPattern.test(formData.value.nameKana)) {
+        deleteErrorMessage.value = '読み仮名はひらがなで入力してください'
+        showErrorModal.value = true
+        return
+    }
+
     try {
         if (editingWork.value) {
             await updateWork(editingWork.value.id, formData.value)
@@ -108,7 +125,8 @@ const submitForm = async () => {
         closeFormModal()
         await fetchWorks()
     } catch (e: any) {
-        alert('エラーが発生しました: ' + (e?.message || '不明なエラー'))
+        deleteErrorMessage.value = e?.message || 'エラーが発生しました'
+        showErrorModal.value = true
     }
 }
 
@@ -118,7 +136,7 @@ const submitForm = async () => {
 const closeFormModal = () => {
     showFormModal.value = false
     editingWork.value = null
-    formData.value = { name: '', nameKana: '' }
+    formData.value = { name: '', nameKana: '', memo: '' }
 }
 
 /**
@@ -142,7 +160,8 @@ const confirmDelete = async () => {
         showSuccessModal.value = true
     } catch (e: any) {
         showDeleteModal.value = false
-        alert('削除に失敗しました: ' + (e?.message || '不明なエラー'))
+        deleteErrorMessage.value = e?.message || '削除に失敗しました'
+        showErrorModal.value = true
     } finally {
         deleting.value = false
     }
@@ -154,6 +173,14 @@ const confirmDelete = async () => {
 const closeSuccessModal = async () => {
     showSuccessModal.value = false
     deletingWork.value = null
+    await fetchWorks()
+}
+
+/**
+ * エラーモーダルを閉じて一覧を更新
+ */
+const closeErrorModal = async () => {
+    showErrorModal.value = false
     await fetchWorks()
 }
 
@@ -317,6 +344,22 @@ onMounted(async () => {
 }
 
 .form-group input:focus {
+    outline: none;
+    border-color: #2196f3;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.form-group textarea:focus {
     outline: none;
     border-color: #2196f3;
 }
