@@ -23,27 +23,50 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * ログインページ
+ * メールアドレスとパスワードでSupabase認証を行う
+ */
+
+// ページメタデータ：ヘッダー・フッターを非表示にする'auth'レイアウトを使用
 definePageMeta({
     layout: 'auth'
 })
 
+// フォーム入力値（開発用にデフォルト値を設定）
 const email = ref('test@example.com')
 const password = ref('password123')
+// ログイン処理中フラグ（ボタンの無効化に使用）
 const loading = ref(false)
+// エラーメッセージ
 const error = ref('')
 
+// 認証関連の機能を取得
 const { login } = useAuth()
+// ルーター（ログイン成功後の遷移に使用）
 const router = useRouter()
 
+/**
+ * ログインフォーム送信時の処理
+ * 1. Supabaseで認証
+ * 2. 成功したらトップページ（/）に遷移
+ * 3. 失敗したらエラーメッセージを表示
+ */
 const onSubmit = async () => {
+    // ローディング開始
     loading.value = true
+    // エラーメッセージをクリア
     error.value = ''
     try {
+        // Supabaseでログイン処理を実行（トークンがCookieに保存される）
         await login(email.value, password.value)
+        // ログイン成功後、トップページに遷移
         await router.push('/')
     } catch (e) {
+        // ログイン失敗時のエラーメッセージ
         error.value = 'メールまたはパスワードが正しくありません'
     } finally {
+        // ローディング終了
         loading.value = false
     }
 }

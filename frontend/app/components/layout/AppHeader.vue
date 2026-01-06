@@ -29,15 +29,29 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * アプリケーションのヘッダーコンポーネント
+ * ロゴ、ナビゲーションタブ、ログアウトボタンを表示
+ */
 import { useRoute, useRouter } from "vue-router"
 
+// 現在のルート情報を取得（アクティブなタブの判定に使用）
 const route = useRoute()
+// ルーター（ページ遷移用）
 const router = useRouter()
+// 認証関連の機能を取得
 const { logout } = useAuth()
 
+/**
+ * ログアウトボタンのクリックハンドラ
+ * 1. Supabaseのセッションとトークンを削除
+ * 2. ログイン画面にリダイレクト（ページ全体をリロード）
+ */
 const handleLogout = async () => {
+    // ログアウト処理（トークン削除とSupabaseセッションのクリア）
     await logout()
     // ページ全体をリロードしてキャッシュをクリア
+    // router.push()ではなくwindow.location.hrefを使うことで確実にリセット
     window.location.href = '/login'
 }
 </script>
