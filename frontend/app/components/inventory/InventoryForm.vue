@@ -44,10 +44,34 @@
                 <input type="date" v-model="formData.purchaseDate" required />
             </label>
 
-            <!-- 画像ファイル選択（オプショナル） -->
-            <label>画像ファイル
-                <input type="file" accept="image/*" @change="onFileChange" />
-            </label>
+            <!-- 画像アップロード（オプショナル） -->
+            <div class="image-upload">
+                <label>画像</label>
+
+                <!-- 画像プレビュー -->
+                <div v-if="formData.imageUrl" class="image-preview">
+                    <img :src="getImageUrl(formData.imageUrl)" alt="プレビュー" />
+                    <button type="button" class="btn-remove" @click="removeImage" :disabled="imageUploading">
+                        削除
+                    </button>
+                </div>
+
+                <!-- ファイル選択 -->
+                <div v-else>
+                    <input ref="fileInput" type="file" accept="image/*" @change="onFileChange"
+                        :disabled="imageUploading" />
+                </div>
+
+                <!-- アップロード中表示 -->
+                <div v-if="imageUploading" class="uploading">
+                    アップロード中...
+                </div>
+
+                <!-- エラー表示 -->
+                <div v-if="imageError" class="image-error">
+                    {{ imageError }}
+                </div>
+            </div>
 
             <!-- メモ入力（最大1000文字、オプショナル） -->
             <label>メモ
@@ -64,7 +88,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
+import { useImageUpload } from '~/composables/useImageUpload'
 
 /**
  * 在庫フォームのデータ型
@@ -114,15 +139,19 @@ const props = withDefaults(defineProps<Props>(), {
 
 /**
  * コンポーネントが親に通知するイベント定義
- * - submit: フォーム送信時に発火（フォームデータと画像ファイルを渡す）
+ * - submit: フォーム送信時に発火（フォームデータのみ、画像は即座アップロード済み）
  * - cancel: キャンセルボタンクリック時に発火
  */
 const emit = defineEmits<{
-    submit: [data: InventoryFormData, imageFile: File | null]
+    submit: [data: InventoryFormData]
     cancel: []
 }>()
 
-// フォームの入力データを保持するref
+// 画像アップロード用のcomposable
+const { uploadImage, deleteImage, validateImageFile, getImageUrl, loading: imageUploading, error: imageError } = useImageUpload()
+
+// ファイル入力要素への参照
+const fileInput = ref<HTMLInputElement>()
 
 // フォームの入力データを保持するref
 const formData = ref<InventoryFormData>({
@@ -153,6 +182,13 @@ if (props.initialData) {
     }
 }
 
+// マウント時の処理は不要（imagePreviewを削除したため）
+// onMounted(() => {
+//     if (props.initialData?.imageUrl) {
+//         imagePreview.value = props.initialData.imageUrl
+//     }
+// })
+
 // 初期データの変更を監視してフォームを更新（編集モードで別のアイテムを読み込んだ場合など）
 watch(() => props.initialData, (newData) => {
     if (newData) {
@@ -171,22 +207,73 @@ watch(() => props.initialData, (newData) => {
 
 /**
  * 画像ファイル選択時の処理
- * 選択されたファイルをimageFileに保存
+ * ファイルを選択したら即座にアップロード
  */
-const onFileChange = (e: Event) => {
+const onFileChange = async (e: Event) => {
     const files = (e.target as HTMLInputElement).files
-    imageFile.value = files?.[0] ?? null
+    const file = files?.[0]
+
+    if (!file) return
+
+    // バリデーション
+    const validationError = validateImageFile(file)
+    if (validationError) {
+        alert(validationError)
+        return
+    }
+
+    try {
+        // 古い画像があれば削除
+        if (formData.value.imageUrl) {
+            try {
+                await deleteImage(formData.value.imageUrl)
+            } catch (e) {
+                console.warn('古い画像の削除に失敗しましたが、続行します', e)
+            }
+        }
+
+        // 新しい画像をアップロード（相対パスが返される）
+        const uploadedUrl = await uploadImage(file)
+
+        // フォームデータを更新（相対パスで保存）
+        formData.value.imageUrl = uploadedUrl
+
+    } catch (e: any) {
+        console.error('画像アップロードエラー:', e)
+        alert('画像のアップロードに失敗しました')
+    }
+}
+
+/**
+ * 画像削除処理
+ */
+const removeImage = async () => {
+    if (!formData.value.imageUrl) return
+
+    try {
+        await deleteImage(formData.value.imageUrl)
+        formData.value.imageUrl = null
+
+        // ファイル入力をリセット
+        if (fileInput.value) {
+            fileInput.value.value = ''
+        }
+    } catch (e: any) {
+        console.error('画像削除エラー:', e)
+        alert('画像の削除に失敗しました')
+    }
 }
 
 /**
  * フォーム送信処理
  * バリデーションチェック後、submitイベントを発火して親コンポーネントに通知
+ * 画像は既にアップロード済みなのでformData.imageUrlに含まれている
  */
 const handleSubmit = () => {
     // 必須項目のチェック（HTML5バリデーションで通常は弾かれるが二重チェック）
     if (!formData.value.workId || !formData.value.itemTypeId) return
-    // 親コンポーネントにデータを渡す
-    emit('submit', formData.value, imageFile.value)
+    // 親コンポーネントにデータを渡す（画像URLは既に含まれている）
+    emit('submit', formData.value)
 }
 
 /**
@@ -227,5 +314,55 @@ const handleCancel = () => {
     border-radius: 4px;
     color: #c33;
     font-size: 14px
+}
+
+.image-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.image-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: start;
+}
+
+.image-preview img {
+    max-width: 300px;
+    max-height: 300px;
+    object-fit: contain;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.btn-remove {
+    padding: 6px 12px;
+    background: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-remove:hover {
+    background: #b71c1c;
+}
+
+.btn-remove:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.uploading {
+    color: #666;
+    font-size: 14px;
+}
+
+.image-error {
+    color: #d32f2f;
+    font-size: 14px;
 }
 </style>

@@ -7,9 +7,8 @@
         <div v-else-if="item">
             <div class="detail">
                 <div class="box">
-                    <img v-if="item.imageUrl" :src="item.imageUrl" alt="" />
                     <div class="image">
-                        <img v-if="item.imageUrl" :src="item.imageUrl" alt="" />
+                        <img v-if="item.imageUrl" :src="getImageUrl(item.imageUrl)" alt="" />
                         <div v-else class="no-image">画像なし</div>
                     </div>
                     <div class="info">
@@ -56,6 +55,7 @@ import { useRoute, useRouter } from '#imports'
 import PageTitle from '~/components/common/PageTitle.vue'
 import { useOwnedItems } from '~/composables/useOwnedItems'
 import { useFooterButtons } from '~/composables/useFooterButtons'
+import { useImageUpload } from '~/composables/useImageUpload'
 
 const route = useRoute()
 const router = useRouter()
@@ -64,6 +64,7 @@ const workId = Number(route.params.workId)
 
 const item = ref<any | null>(null)
 const { loading, error, fetchDetail, deleteItem: deleteItemApi } = useOwnedItems()
+const { getImageUrl } = useImageUpload()
 const showDeleteModal = ref(false)
 const showSuccessModal = ref(false)
 const deleting = ref(false)

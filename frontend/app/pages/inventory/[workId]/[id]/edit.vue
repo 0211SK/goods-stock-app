@@ -63,11 +63,11 @@ onMounted(async () => {
 
 /**
  * フォーム送信時の処理
- * composableのupdate関数を使用してAPIを呼び出す
+ * composableのupdate関数を使用してAPIを呼び出す（画像は既にアップロード済み）
  */
-const onSubmit = async (formData: InventoryFormData, imageFile: File | null) => {
+const onSubmit = async (formData: InventoryFormData) => {
     try {
-        // 更新用のペイロードを作成
+        // 更新用のペイロードを作成（画像URLは既に含まれている）
         const payload = {
             workId: formData.workId!,
             itemTypeId: formData.itemTypeId!,
@@ -76,7 +76,7 @@ const onSubmit = async (formData: InventoryFormData, imageFile: File | null) => 
             unitPrice: formData.unitPrice,
             purchaseDate: formData.purchaseDate,
             imageUrl: formData.imageUrl,
-            memo: formData.memo,
+            memo: formData.memo
         }
 
         // composableのupdate関数を呼び出す（loadingとerrorはcomposable内で管理）

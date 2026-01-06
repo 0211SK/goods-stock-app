@@ -7,7 +7,7 @@
                 <article v-for="item in items" :key="item.id" class="card" role="link" @click="goToDetail(item)"
                     tabindex="0">
                     <div class="thumb">
-                        <img v-if="item.imageUrl" :src="item.imageUrl" alt="" />
+                        <img v-if="item.imageUrl" :src="getImageUrl(item.imageUrl)" alt="" />
                         <div v-else class="no-image">画像なし</div>
                     </div>
                     <div class="body">
@@ -23,7 +23,10 @@
 import type { InventoryQuery } from '~/types/inventory'
 import { computed, watchEffect } from 'vue'
 import { useOwnedItems } from '~/composables/useOwnedItems'
+import { useImageUpload } from '~/composables/useImageUpload'
 import { useRouter } from '#imports'
+
+const { getImageUrl } = useImageUpload()
 
 const props = defineProps<{
     workId: number | null
@@ -60,19 +63,21 @@ watchEffect(() => {
 <style scoped>
 .inventory-list {
     margin-top: 18px;
+    padding: 0 12px;
 }
 
 .loading,
 .error {
     text-align: center;
     color: #666;
+    padding: 40px 20px;
 }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
-    align-items: start;
+    align-items: stretch;
 }
 
 .card {
@@ -83,6 +88,18 @@ watchEffect(() => {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+    height: 100%;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.card:active {
+    transform: translateY(0);
 }
 
 .thumb {
@@ -92,12 +109,13 @@ watchEffect(() => {
     align-items: center;
     justify-content: center;
     background: #fafafa;
+    overflow: hidden;
 }
 
 .thumb img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .no-image {
@@ -107,28 +125,98 @@ watchEffect(() => {
 
 .body {
     padding: 12px 14px;
+    flex: 1;
+    display: flex;
+    align-items: center;
 }
 
 .goods-name {
     font-size: 16px;
-    margin: 0 0 6px 0;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.4;
+    width: 100%;
 }
 
+/* タブレット表示 */
 @media (max-width: 1100px) {
     .grid {
         grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
     }
 }
 
+/* スマホ横向き・小型タブレット */
 @media (max-width: 800px) {
     .grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .thumb {
+        height: 120px;
+    }
+
+    .goods-name {
+        font-size: 14px;
     }
 }
 
+/* スマホ縦向き */
 @media (max-width: 480px) {
+    .inventory-list {
+        margin-top: 12px;
+        padding: 0 6px;
+    }
+
     .grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .card {
+        border-radius: 6px;
+    }
+
+    .thumb {
+        height: 100px;
+    }
+
+    .body {
+        padding: 6px 8px;
+    }
+
+    .goods-name {
+        font-size: 13px;
+        margin: 0;
+        -webkit-line-clamp: 2;
+    }
+
+    .no-image {
+        font-size: 11px;
+    }
+}
+
+/* 極小スマホ（320px以下） */
+@media (max-width: 360px) {
+    .grid {
+        gap: 6px;
+    }
+
+    .thumb {
+        height: 90px;
+    }
+
+    .body {
+        padding: 5px 6px;
+    }
+
+    .goods-name {
+        font-size: 12px;
     }
 }
 </style>

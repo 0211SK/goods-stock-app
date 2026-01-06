@@ -50,15 +50,15 @@ onMounted(() => {
 
 /**
  * フォーム送信時の処理
- * 1. APIで新規在庫を登録
+ * 1. APIで新規在庫を登録（画像は既にアップロード済み）
  * 2. 成功したらその作品の在庫一覧ページに遷移
  * 3. 失敗したらエラーメッセージを表示
  */
-const onSubmit = async (formData: InventoryFormData, imageFile: File | null) => {
+const onSubmit = async (formData: InventoryFormData) => {
     submitting.value = true
     errorMessage.value = null
     try {
-        // APIに送信するペイロードを作成
+        // APIに送信するペイロードを作成（画像URLは既に含まれている）
         const payload = {
             workId: formData.workId!,
             itemTypeId: formData.itemTypeId!,
