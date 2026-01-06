@@ -18,6 +18,8 @@ import PageTitle from '~/components/common/PageTitle.vue'
 import InventoryFilterBar from '~/components/inventory/InventoryFilterBar.vue'
 import InventoryList from '~/components/inventory/InventoryList.vue'
 import type { InventoryQuery, InventorySort } from '~/types/inventory'
+import { useWorks } from '~/composables/useWorks'
+import { useFooterButtons } from '~/composables/useFooterButtons'
 
 const route = useRoute()
 const router = useRouter()
@@ -29,8 +31,21 @@ const toNum = (v: unknown) => {
 
 const workId = computed<number | null>(() => toNum(route.params.id))
 
-import { useWorks } from '~/composables/useWorks'
 const { items: works, fetchWorks } = useWorks()
+
+/**
+ * 新規登録ページへ遷移
+ */
+const goToNew = () => {
+    void router.push('/inventory/new')
+}
+
+// フッターに登録ボタンを追加
+useFooterButtons([{
+    label: '在庫データ登録',
+    icon: '➕',
+    onClick: goToNew
+}])
 
 onMounted(() => {
     void fetchWorks({ page: 1, size: 200 })
