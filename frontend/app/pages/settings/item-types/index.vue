@@ -42,10 +42,11 @@
             </div>
         </div>
 
-        <!-- 削除確認・成功モーダル -->
+        <!-- 削除確認・成功・失敗モーダル -->
         <DeleteConfirmModal :show-delete-modal="showDeleteModal" :show-success-modal="showSuccessModal"
-            :deleting="deleting" @confirm="confirmDelete" @cancel="showDeleteModal = false"
-            @close-success="closeSuccessModal" />
+            :show-error-modal="showErrorModal" :error-message="deleteErrorMessage" :deleting="deleting"
+            @confirm="confirmDelete" @cancel="showDeleteModal = false" @close-success="closeSuccessModal"
+            @close-error="showErrorModal = false" />
     </section>
 </template>
 
@@ -61,6 +62,8 @@ const error = ref<string | null>(null)
 const showFormModal = ref(false)
 const showDeleteModal = ref(false)
 const showSuccessModal = ref(false)
+const showErrorModal = ref(false)
+const deleteErrorMessage = ref('')
 const deleting = ref(false)
 const editingType = ref<ItemType | null>(null)
 const deletingType = ref<ItemType | null>(null)
@@ -136,7 +139,8 @@ const confirmDelete = async () => {
         showSuccessModal.value = true
     } catch (e: any) {
         showDeleteModal.value = false
-        alert('削除に失敗しました: ' + (e?.message || '不明なエラー'))
+        deleteErrorMessage.value = e?.message || '削除に失敗しました'
+        showErrorModal.value = true
     } finally {
         deleting.value = false
     }
