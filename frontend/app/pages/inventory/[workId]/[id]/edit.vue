@@ -2,8 +2,11 @@
     <section class="page">
         <PageTitle title="グッズ詳細編集" />
 
+        <!-- 読み込み中・エラー表示 -->
         <div v-if="loading && !item">読み込み中…</div>
         <div v-else-if="error && !item">データの取得に失敗しました</div>
+
+        <!-- 編集フォーム -->
         <InventoryForm v-else-if="item" :initial-data="formData" :works="works" :item-types="itemTypes"
             :submitting="loading" :error-message="error" submit-label="更新する" @submit="onSubmit" @cancel="cancel" />
     </section>

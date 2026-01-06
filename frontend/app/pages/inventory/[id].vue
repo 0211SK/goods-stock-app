@@ -4,8 +4,10 @@
             <div class="box2">
                 <PageTitle title="グッズ一覧" />
 
+                <!-- フィルタバー -->
                 <InventoryFilterBar :filters="filters" :workName="workName" @update:filters="updateFilters" />
             </div>
+            <!-- 在庫一覧コンポーネント -->
             <InventoryList :workId="workId" :filters="filters" />
         </div>
     </section>
