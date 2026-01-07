@@ -11,37 +11,18 @@ export default defineNuxtPlugin(() => {
         if (error.name === 'AbortError') return false // キャンセルはリトライしない
         if (error.code === 'ERR_NETWORK') return true
 
-        // 5xx系のサーバーエラーはリトライ対象
         const status = error.response?.status
+
+        // 401エラーはリトライしない（認証エラー）
+        if (status === 401) return false
+
+        // 5xx系のサーバーエラーはリトライ対象
         if (status && status >= 500 && status < 600) return true
 
         // 429 (Too Many Requests) もリトライ対象
         if (status === 429) return true
 
         return false
-    }
-
-    /**
-     * 指数バックオフでリトライを実行
-     */
-    const fetchWithRetry = async (url: string, options: any, retries = 3) => {
-        for (let i = 0; i < retries; i++) {
-            try {
-                return await $fetch(url, options)
-            } catch (error: any) {
-                // 最後の試行でエラーの場合は例外をスロー
-                if (i === retries - 1) throw error
-
-                // リトライ可能なエラーでない場合は即座にスロー
-                if (!isRetryableError(error)) throw error
-
-                // 指数バックオフで待機 (100ms, 200ms, 400ms...)
-                const delay = Math.min(1000, 100 * Math.pow(2, i))
-                await new Promise(resolve => setTimeout(resolve, delay))
-
-                console.log(`Retrying request (${i + 1}/${retries - 1})...`)
-            }
-        }
     }
 
     const api = $fetch.create({
@@ -60,30 +41,24 @@ export default defineNuxtPlugin(() => {
             options.headers = headers
         },
         async onResponseError({ response }) {
-            // 401エラーの場合、セッションタイムアウトをチェック
+            // 401エラーの場合、認証エラーとしてログアウト
             if (response.status === 401) {
-                try {
-                    const errorData = response._data
+                console.error('認証エラー: トークンが無効または期限切れです')
 
-                    // SESSION_TIMEOUTエラーの場合
-                    if (errorData?.errorCode === 'SESSION_TIMEOUT') {
-                        // ログアウト処理
-                        await logout()
+                // エラーメッセージを表示
+                const errorData = response._data
+                const message = errorData?.errorCode === 'SESSION_TIMEOUT'
+                    ? 'セッションがタイムアウトしました。再度ログインしてください。'
+                    : '認証の有効期限が切れました。再度ログインしてください。'
 
-                        // ユーザーに通知
-                        alert('セッションがタイムアウトしました。再度ログインしてください。')
+                // ログアウト処理
+                await logout()
 
-                        // ログインページへリダイレクト
-                        await router.push('/login')
-                        return
-                    }
+                // アラート表示
+                alert(message)
 
-                    // その他の401エラー（認証エラー）もログインページへ
-                    await logout()
-                    await router.push('/login')
-                } catch (e) {
-                    console.error('Session timeout handling error:', e)
-                }
+                // ログインページへリダイレクト
+                await router.push('/login')
             }
         },
     })

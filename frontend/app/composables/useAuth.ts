@@ -22,6 +22,10 @@ export const useAuth = () => {
         token.value = data.session?.access_token ?? null
     }
 
+    const setToken = (newToken: string | null) => {
+        token.value = newToken
+    }
 
-    return { token, login, logout, syncSessionToCookie }
+
+    return { token, login, logout, syncSessionToCookie, setToken }
 }

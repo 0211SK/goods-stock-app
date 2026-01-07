@@ -13,6 +13,10 @@
 <script setup lang="ts">
 import AppHeader from '~/components/layout/AppHeader.vue'
 import AppFooter from '~/components/layout/AppFooter.vue'
+import { useAutoLogout } from '~/composables/useAutoLogout'
+
+// 3時間の非アクティブ時に自動ログアウト
+useAutoLogout(180)
 </script>
 
 <style scoped>
