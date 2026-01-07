@@ -2,6 +2,7 @@
     <div class="inventory-list">
         <div v-if="loading" class="loading">読み込み中…</div>
         <div v-else-if="error" class="error">取得に失敗しました</div>
+        <div v-else-if="items.length === 0" class="no-data">データなし</div>
         <div v-else>
             <div class="grid">
                 <article v-for="item in items" :key="item.id" class="card" role="link" @click="goToDetail(item)"
@@ -67,7 +68,8 @@ watchEffect(() => {
 }
 
 .loading,
-.error {
+.error,
+.no-data {
     text-align: center;
     color: #666;
     padding: 40px 20px;
