@@ -6,7 +6,6 @@
         </div>
 
         <!-- 在庫登録・更新フォーム -->
-        <!-- 在庫登録・更新フォーム -->
         <form class="form" @submit.prevent="handleSubmit">
             <!-- 作品選択 -->
             <label>作品
@@ -41,7 +40,7 @@
 
             <!-- 購入日入力 -->
             <label>購入日
-                <input type="date" v-model="formData.purchaseDate" required />
+                <input type="date" v-model="formData.purchaseDate" :max="today" required />
             </label>
 
             <!-- 画像アップロード（オプショナル） -->
@@ -88,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import { useImageUpload } from '~/composables/useImageUpload'
 
 /**
@@ -168,6 +167,15 @@ const formData = ref<InventoryFormData>({
 // 選択された画像ファイルを保持
 const imageFile = ref<File | null>(null)
 
+// 今日の日付を取得（未来の日付を入力できないようにするため）
+const today = computed(() => {
+    const date = new Date()
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+})
+
 // 初期データがあればフォームに設定（編集モード用）
 if (props.initialData) {
     formData.value = {
@@ -181,13 +189,6 @@ if (props.initialData) {
         memo: props.initialData.memo ?? null,
     }
 }
-
-// マウント時の処理は不要（imagePreviewを削除したため）
-// onMounted(() => {
-//     if (props.initialData?.imageUrl) {
-//         imagePreview.value = props.initialData.imageUrl
-//     }
-// })
 
 // 初期データの変更を監視してフォームを更新（編集モードで別のアイテムを読み込んだ場合など）
 watch(() => props.initialData, (newData) => {
