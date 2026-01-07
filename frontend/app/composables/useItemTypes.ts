@@ -31,7 +31,8 @@ export const useItemTypes = () => {
             items.value = res.items ?? []
         } catch (e: any) {
             console.error('fetchItemTypes failed', e)
-            error.value = e?.message ?? String(e)
+            const errorMessage = e?.data?.message || e?.message || String(e)
+            error.value = errorMessage
             items.value = []
         } finally {
             loading.value = false
@@ -52,8 +53,9 @@ export const useItemTypes = () => {
             })
         } catch (e: any) {
             console.error('createItemType failed', e)
-            error.value = e?.message ?? String(e)
-            throw e
+            const errorMessage = e?.data?.message || e?.message || String(e)
+            error.value = errorMessage
+            throw new Error(errorMessage)
         } finally {
             loading.value = false
         }
@@ -73,8 +75,9 @@ export const useItemTypes = () => {
             })
         } catch (e: any) {
             console.error('updateItemType failed', e)
-            error.value = e?.message ?? String(e)
-            throw e
+            const errorMessage = e?.data?.message || e?.message || String(e)
+            error.value = errorMessage
+            throw new Error(errorMessage)
         } finally {
             loading.value = false
         }

@@ -37,7 +37,8 @@ export const useWorks = () => {
             }))
         } catch (e: any) {
             console.error('fetchWorks failed', e)
-            error.value = e?.message ?? String(e)
+            const errorMessage = e?.data?.message || e?.message || String(e)
+            error.value = errorMessage
             items.value = []
         } finally {
             loading.value = false

@@ -72,7 +72,8 @@ export const useWishlistItems = () => {
         } catch (e: any) {
             // エラー時は空配列を設定し、エラーメッセージを保存
             console.error('fetchWishItems failed', e)
-            error.value = e?.message ?? String(e)
+            const errorMessage = e?.data?.message || e?.message || String(e)
+            error.value = errorMessage
             items.value = []
             meta.value = null
         } finally {
@@ -97,8 +98,9 @@ export const useWishlistItems = () => {
         } catch (e: any) {
             // エラー時はエラーメッセージを保存して例外を再スロー
             console.error('createWishItem failed', e)
-            error.value = e?.message ?? String(e)
-            throw e
+            const errorMessage = e?.data?.message || e?.message || String(e)
+            error.value = errorMessage
+            throw new Error(errorMessage)
         } finally {
             loading.value = false
         }
@@ -121,8 +123,9 @@ export const useWishlistItems = () => {
         } catch (e: any) {
             // エラー時はエラーメッセージを保存して例外を再スロー
             console.error('fetchWishItemDetail failed', e)
-            error.value = e?.message ?? String(e)
-            throw e
+            const errorMessage = e?.data?.message || e?.message || String(e)
+            error.value = errorMessage
+            throw new Error(errorMessage)
         } finally {
             loading.value = false
         }
@@ -146,8 +149,9 @@ export const useWishlistItems = () => {
         } catch (e: any) {
             // エラー時はエラーメッセージを保存して例外を再スロー
             console.error('updateWishItem failed', e)
-            error.value = e?.message ?? String(e)
-            throw e
+            const errorMessage = e?.data?.message || e?.message || String(e)
+            error.value = errorMessage
+            throw new Error(errorMessage)
         } finally {
             loading.value = false
         }
