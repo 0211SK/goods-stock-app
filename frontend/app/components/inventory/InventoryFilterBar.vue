@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import type { InventoryQuery } from '~/types/inventory'
-import { onMounted } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useItemTypes } from '~/composables/useItemTypes'
 
 
