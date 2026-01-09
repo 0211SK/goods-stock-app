@@ -25,6 +25,7 @@ export default defineConfig({
         alias: {
             '~': fileURLToPath(new URL('./app', import.meta.url)),
             '@': fileURLToPath(new URL('./app', import.meta.url)),
+            '#imports': fileURLToPath(new URL('./test/mocks/nuxt-imports.ts', import.meta.url)),
         },
     },
 })

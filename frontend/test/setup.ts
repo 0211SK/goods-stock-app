@@ -31,7 +31,14 @@ declare global {
     }))
 
     ; (global as any).navigateTo = vi.fn()
-
+    // Vueライフサイクルフックをモック
+    ; (global as any).onMounted = vi.fn((cb) => cb && cb())
+    ; (global as any).onBeforeUnmount = vi.fn()
+    ; (global as any).onUnmounted = vi.fn()
+    ; (global as any).useState = vi.fn((key, init) => {
+        const value = init ? init() : null
+        return { value }
+    })
 // process.serverのモック
 if (typeof process === 'undefined') {
     ; (global as any).process = { server: false }
