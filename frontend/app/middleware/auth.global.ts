@@ -1,3 +1,7 @@
+
+import { defineNuxtRouteMiddleware, navigateTo } from 'nuxt/app'
+import { useAuth } from '../composables/useAuth'
+
 // トークンがなければ自動でログイン画面にリダイレクト
 export default defineNuxtRouteMiddleware(async (to) => {
     // ログインページへのアクセスは許可

@@ -6,4 +6,6 @@ export const useRouter = () => ({
     forward: () => { },
 })
 
-export const navigateTo = () => Promise.resolve()
+export const navigateTo = vi.fn(() => Promise.resolve())
+
+export const defineNuxtRouteMiddleware = (fn: any) => fn
