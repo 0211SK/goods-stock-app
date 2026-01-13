@@ -33,22 +33,17 @@ export const useAutoLogout = (timeoutMinutes: number = 180) => {
         }, TIMEOUT_MS)
     }
 
+
     /**
-     * ユーザーアクティビティの監視を開始
+     * API通信時のみタイマーをリセットする
+     * window.dispatchEvent(new CustomEvent('api-activity')) でリセット
      */
     const startWatching = () => {
         if (process.server || isActive.value) return
 
         isActive.value = true
-
-        // 初回タイマーセット
         resetTimer()
-
-        // ユーザーの操作イベントを監視
-        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click']
-        events.forEach(event => {
-            window.addEventListener(event, resetTimer, { passive: true })
-        })
+        window.addEventListener('api-activity', resetTimer)
     }
 
     /**
@@ -65,11 +60,8 @@ export const useAutoLogout = (timeoutMinutes: number = 180) => {
             timeoutId.value = null
         }
 
-        // イベントリスナーを削除
-        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click']
-        events.forEach(event => {
-            window.removeEventListener(event, resetTimer)
-        })
+        // カスタムイベントリスナーを削除
+        window.removeEventListener('api-activity', resetTimer)
     }
 
     // コンポーネントのマウント時に監視開始

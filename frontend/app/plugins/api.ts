@@ -35,6 +35,11 @@ export default defineNuxtPlugin(() => {
         onRequest({ options }) {
             if (!token.value) return
 
+            // API通信ごとに自動ログアウトタイマーをリセット
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('api-activity'))
+            }
+
             // options.headersはHeaders/配列/オブジェクトの可能性があるためHeadersに正規化
             const headers = new Headers(options.headers as HeadersInit | undefined)
             headers.set('Authorization', `Bearer ${token.value}`)
