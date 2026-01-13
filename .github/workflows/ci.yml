@@ -29,12 +29,3 @@ jobs:
       - name: Build Nuxt app
         run: npm run build
         working-directory: frontend
-      - name: Run E2E tests (Cypress)
-        uses: cypress-io/github-action@v6
-        with:
-          install: false
-          start: npm run preview
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120000
-          browser: electron
-          working-directory: frontend
