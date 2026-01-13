@@ -25,6 +25,7 @@
     "@vitejs/plugin-vue": "^6.0.3",
     "@vitest/ui": "^3.2.4",
     "@vue/test-utils": "^2.4.6",
+    "cypress": "^15.8.2",
     "happy-dom": "^20.1.0",
     "vitest": "^3.2.4"
   }
