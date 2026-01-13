@@ -5,8 +5,13 @@ import authGlobalMiddleware from '../../app/middleware/auth.global'
 import { useAuth } from '../../app/composables/useAuth'
 import { defineNuxtRouteMiddleware, navigateTo } from 'nuxt/app'
 
+
 vi.mock('../../app/composables/useAuth')
-vi.mock('nuxt/app', () => require(require('path').resolve(__dirname, '../mocks/nuxt-imports.ts')))
+vi.mock('nuxt/app', async () => {
+    // ESM importでモックファイルを読み込む
+    const mod = await import('../mocks/nuxt-imports.ts')
+    return mod
+})
 
     // グローバルにdefineNuxtRouteMiddlewareをモック
     ; (globalThis as any).defineNuxtRouteMiddleware = (fn: any) => fn
