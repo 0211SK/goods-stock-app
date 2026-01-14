@@ -110,6 +110,7 @@ const handleLogout = async () => {
 
 .tabs {
     display: flex;
+    align-items: center;
     border: 1px solid #d1d5db;
     flex: 0 0 auto;
 }

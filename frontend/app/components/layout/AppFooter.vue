@@ -157,20 +157,35 @@ const goBack = () => {
     flex-shrink: 0;
 }
 
+@media (max-width: 640px) {
+    .footer-buttons {
+        font-size: 10px;
+        padding: 0 8px;
+    }
+}
+
 /* タブレット画面用の調整 */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .footer-buttons {
         gap: clamp(6px, 1.5vw, 12px);
     }
 
     .footer-btn {
-        min-width: 70px;
+        min-width: 65px;
         padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.8vw, 16px);
+    }
+
+    .icon {
+        font-size: 13px;
+    }
+
+    .label {
+        font-size: 10px;
     }
 }
 
 /* レスポンシブ対応: 小さい画面ではボタンを縦に配置 */
-@media (max-width: 480px) {
+@media (max-width: 380px) {
     .footer-buttons {
         flex-direction: column;
         gap: 12px;
