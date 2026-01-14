@@ -36,7 +36,7 @@ describe('SettingsMenuPage', () => {
     })
 
     it('NuxtLinkが2つ表示される', () => {
-        const links = wrapper.findAllComponents({ name: 'NuxtLink' })
+        const links = wrapper.findAll('a')
         expect(links.length).toBe(2)
     })
 })

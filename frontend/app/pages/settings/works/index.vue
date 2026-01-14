@@ -1,7 +1,5 @@
 <template>
-    <section class="page">
-        <PageTitle title="作品管理" />
-
+    <CommonPageLayout title="作品管理">
         <!-- 作品一覧コンポーネント -->
         <WorksList :items="items" :loading="loading" :error="error" @add="openAddModal" @edit="openEditModal"
             @delete="openDeleteModal" />
@@ -17,12 +15,13 @@
             :show-error-modal="showErrorModal" :error-message="deleteErrorMessage" :deleting="deleting"
             @confirm="confirmDelete" @cancel="showDeleteModal = false" @close-success="closeSuccessModal"
             @close-error="closeErrorModal" />
-    </section>
+    </CommonPageLayout>
+
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import PageTitle from '~/components/common/PageTitle.vue'
+import CommonPageLayout from '~/components/common/CommonPageLayout.vue'
 import DeleteConfirmModal from '~/components/common/DeleteConfirmModal.vue'
 import WorksList from '~/components/settings/WorksList.vue'
 import WorksFormModal from '~/components/settings/WorksFormModal.vue'

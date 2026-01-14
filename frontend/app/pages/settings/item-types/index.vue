@@ -1,7 +1,5 @@
 <template>
-    <section class="page">
-        <PageTitle title="種類管理" />
-
+    <CommonPageLayout title="種類管理">
         <!-- 種類一覧コンポーネント -->
         <ItemTypesList :items="items" :loading="loading" :error="error" @add="openAddModal" @edit="openEditModal"
             @delete="openDeleteModal" />
@@ -15,12 +13,12 @@
             :show-error-modal="showErrorModal" :error-message="deleteErrorMessage" :deleting="deleting"
             @confirm="confirmDelete" @cancel="showDeleteModal = false" @close-success="closeSuccessModal"
             @close-error="showErrorModal = false" />
-    </section>
+    </CommonPageLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import PageTitle from '~/components/common/PageTitle.vue'
+import CommonPageLayout from '~/components/common/CommonPageLayout.vue'
 import DeleteConfirmModal from '~/components/common/DeleteConfirmModal.vue'
 import ItemTypesList from '~/components/settings/ItemTypesList.vue'
 import ItemTypesFormModal from '~/components/settings/ItemTypesFormModal.vue'

@@ -1,7 +1,5 @@
 <template>
-    <section class="page">
-        <PageTitle title="設定" />
-
+    <CommonPageLayout title="設定">
         <div class="settings-menu">
             <NuxtLink to="/settings/works" class="menu-card">
                 <div class="menu-icon">📚</div>
@@ -19,11 +17,12 @@
                 </div>
             </NuxtLink>
         </div>
-    </section>
+    </CommonPageLayout>
+
 </template>
 
 <script setup lang="ts">
-import PageTitle from '~/components/common/PageTitle.vue'
+import CommonPageLayout from '~/components/common/CommonPageLayout.vue'
 </script>
 
 <style scoped>
