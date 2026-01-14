@@ -301,9 +301,25 @@ const handleCancel = () => {
     font-size: 14px
 }
 
+.form input,
+.form select,
+.form textarea {
+    height: 25px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form textarea {
+    min-height: 40px;
+    resize: vertical;
+}
+
 .actions {
     display: flex;
-    gap: 100px
+    justify-content: center;
+    gap: 50px;
 }
 
 .error-message {

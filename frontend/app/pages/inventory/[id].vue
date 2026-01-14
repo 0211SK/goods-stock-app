@@ -1,22 +1,16 @@
 <template>
-    <section class="page">
-        <div class="box">
-            <div class="box2">
-                <PageTitle title="グッズ一覧" />
-
-                <!-- フィルタバー -->
-                <InventoryFilterBar :filters="filters" :workName="workName" @update:filters="updateFilters" />
-            </div>
-            <!-- 在庫一覧コンポーネント -->
-            <InventoryList :workId="workId" :filters="filters" />
-        </div>
-    </section>
+    <CommonPageLayout title="グッズ一覧">
+        <template #filter>
+            <InventoryFilterBar :filters="filters" :workName="workName" @update:filters="updateFilters" />
+        </template>
+        <InventoryList :workId="workId" :filters="filters" />
+    </CommonPageLayout>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from '#imports'
-import PageTitle from '~/components/common/PageTitle.vue'
+import CommonPageLayout from '~/components/common/CommonPageLayout.vue'
 import InventoryFilterBar from '~/components/inventory/InventoryFilterBar.vue'
 import InventoryList from '~/components/inventory/InventoryList.vue'
 import type { InventoryQuery, InventorySort } from '~/types/inventory'
@@ -95,11 +89,4 @@ const updateFilters = async (partial: InventoryQuery) => {
 }
 </script>
 
-<style scoped>
-.box2 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 18px 12px;
-}
-</style>
+<style scoped></style>

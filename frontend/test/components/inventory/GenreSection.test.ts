@@ -352,4 +352,23 @@ describe('GenreSection.vue', () => {
 
         expect(wrapper.findAll('.genre__row')).toHaveLength(5)
     })
+    it('エラー時にエラーメッセージが表示される', () => {
+        const wrapper = mount(GenreSection, {
+            props: {
+                genres: [],
+                error: 'API error'
+            }
+        })
+        expect(wrapper.text()).toContain('データのデータの取得に失敗しました。リロードしてください')
+    })
+
+    it('エラーがない場合はエラーメッセージが表示されない', () => {
+        const wrapper = mount(GenreSection, {
+            props: {
+                genres: [],
+                error: null
+            }
+        })
+        expect(wrapper.text()).not.toContain('データのデータの取得に失敗しました。リロードしてください')
+    })
 })

@@ -53,11 +53,11 @@ describe('EditPage', () => {
         expect(wrapper.text()).toContain('読み込み中…')
     })
 
-    it('error時は「データの取得に失敗しました」が表示される', async () => {
+    it('error時は「データのデータの取得に失敗しました。リロードしてください」が表示される', async () => {
         wrapper.vm.error = 'error'
         wrapper.vm.item = null
         await wrapper.vm.$nextTick()
-        expect(wrapper.text()).toContain('データの取得に失敗しました')
+        expect(wrapper.text()).toContain('データのデータの取得に失敗しました。リロードしてください')
     })
 
     it('キャンセルで詳細ページに遷移する', async () => {

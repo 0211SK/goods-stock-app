@@ -10,6 +10,11 @@
             </div>
         </div>
 
+        <!-- エラー表示 -->
+        <div v-if="error" class="genre__error">
+            データのデータの取得に失敗しました。リロードしてください
+        </div>
+
         <!-- 一覧 -->
         <div v-if="grouped.length === 0" class="genre__empty">
             作品が存在しません
@@ -37,6 +42,7 @@ import type { WorkItem } from '~/composables/useWorks'
 
 const props = defineProps<{
     genres: WorkItem[]
+    error?: string | null
 }>()
 
 const q = ref('')
@@ -88,6 +94,14 @@ const grouped = computed(() => {
     flex-direction: column;
     align-items: center;
     padding: 28px 16px 48px;
+}
+
+.genre__error {
+    width: min(720px, 100%);
+    padding: 18px 12px;
+    color: #dc2626;
+    text-align: center;
+    font-weight: bold;
 }
 
 /* 検索バー */

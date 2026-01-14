@@ -1,11 +1,12 @@
 <template>
-    <div>
-        <div v-if="loading">読み込み中…</div>
-        <div v-else-if="error">取得に失敗しました</div>
-        <div v-else-if="item">
+    <div class="inventory-detail">
+        <div v-if="loading" class="loading">読み込み中…</div>
+        <div v-else-if="error" class="error">データの取得に失敗しました。リロードしてください</div>
+        <div v-else-if="!item" class="no-data">データが見つかりません。</div>
+        <div v-else>
             <div class="detail">
                 <div class="box">
-                    <div class="image">
+                    <div class="image" :class="{ 'no-image-bg': !item.imageUrl }">
                         <img v-if="item.imageUrl" :src="getImageUrl(item.imageUrl)" alt="" />
                         <div v-else class="no-image">画像なし</div>
                     </div>
@@ -20,7 +21,6 @@
                 </div>
             </div>
         </div>
-        <div v-else>データが見つかりません。</div>
     </div>
 </template>
 
@@ -37,6 +37,19 @@ const { getImageUrl } = useImageUpload()
 </script>
 
 <style scoped>
+.inventory-detail {
+    margin-top: 18px;
+    padding: 0 12px;
+}
+
+.loading,
+.error,
+.no-data {
+    text-align: center;
+    color: #666;
+    padding: 40px 20px;
+}
+
 .detail {
     display: flex;
     gap: 24px;
@@ -47,13 +60,11 @@ const { getImageUrl } = useImageUpload()
 
 .image {
     width: 320px;
-    height: 320px;
+    height: 360px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fafafa;
     border-radius: 8px;
-    border: 1px solid #eee
 }
 
 .image img {
@@ -66,13 +77,79 @@ const { getImageUrl } = useImageUpload()
     flex: 1
 }
 
+.image.no-image-bg {
+    background-color: #e2e2e2;
+}
+
 .no-image {
-    color: #999
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6e6e6e
 }
 
 .box {
     display: flex;
     flex-direction: column;
     gap: 12px;
+}
+
+/* タブレット表示 */
+@media (max-width: 1100px) {
+    .detail {
+        gap: 16px;
+    }
+
+    .image {
+        width: 280px;
+        height: 320px;
+    }
+}
+
+/* スマホ横向き・小型タブレット */
+@media (max-width: 800px) {
+    .detail {
+        gap: 12px;
+    }
+
+    .image {
+        width: 280px;
+        height: 320px;
+    }
+}
+
+/* スマホ縦向き */
+@media (max-width: 480px) {
+    .inventory-detail {
+        margin-top: 12px;
+        padding: 0 6px;
+    }
+
+    .detail {
+        gap: 8px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .image {
+        width: 260px;
+        height: 300px;
+    }
+
+    .box {
+        gap: 8px;
+    }
+}
+
+/* 極小スマホ（320px以下） */
+@media (max-width: 360px) {
+    .detail {
+        gap: 6px;
+    }
+
+    .image {
+        width: 200px;
+        height: 240px;
+    }
 }
 </style>

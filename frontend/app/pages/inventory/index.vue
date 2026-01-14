@@ -1,14 +1,11 @@
 <template>
-    <!-- グッズ作品一覧ページ -->
-    <section class="page">
-        <PageTitle title="グッズ作品一覧" />
-        <!-- 作品ごとのグループ表示コンポーネント -->
+    <CommonPageLayout title="グッズ作品一覧">
         <GenreSection :genres="genres" />
-    </section>
+    </CommonPageLayout>
 </template>
 
 <script setup lang="ts">
-import PageTitle from '~/components/common/PageTitle.vue'
+import CommonPageLayout from '~/components/common/CommonPageLayout.vue'
 import GenreSection from '~/components/inventory/GenreSection.vue'
 import { onMounted } from 'vue'
 import { useRouter } from '#imports'

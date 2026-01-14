@@ -1,21 +1,19 @@
 <template>
-    <section class="page">
-        <PageTitle title="グッズ詳細編集" />
-
+    <CommonPageLayout title="グッズ詳細編集">
         <!-- 読み込み中・エラー表示 -->
         <div v-if="loading && !item">読み込み中…</div>
-        <div v-else-if="error && !item">データの取得に失敗しました</div>
+        <div v-else-if="error && !item">データのデータの取得に失敗しました。リロードしてください</div>
 
         <!-- 編集フォーム -->
         <InventoryForm v-else-if="item" :initial-data="formData" :works="works" :item-types="itemTypes"
             :submitting="loading" :error-message="error" submit-label="更新する" @submit="onSubmit" @cancel="cancel" />
-    </section>
+    </CommonPageLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from '#imports'
-import PageTitle from '~/components/common/PageTitle.vue'
+import CommonPageLayout from '~/components/common/CommonPageLayout.vue'
 import InventoryForm, { type InventoryFormData } from '~/components/inventory/InventoryForm.vue'
 import { useWorks } from '~/composables/useWorks'
 import { useItemTypes } from '~/composables/useItemTypes'

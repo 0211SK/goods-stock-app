@@ -1,7 +1,5 @@
 <template>
-    <section class="page">
-        <PageTitle title="グッズ詳細" />
-
+    <CommonPageLayout title="グッズ詳細">
         <!-- 在庫詳細コンポーネント -->
         <InventoryDetail :item="item" :loading="loading" :error="error" />
 
@@ -10,13 +8,13 @@
             :show-error-modal="showErrorModal" :error-message="deleteErrorMessage" :deleting="deleting"
             @confirm="confirmDelete" @cancel="showDeleteModal = false" @close-success="closeSuccessModal"
             @close-error="showErrorModal = false" />
-    </section>
+    </CommonPageLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from '#imports'
-import PageTitle from '~/components/common/PageTitle.vue'
+import CommonPageLayout from '~/components/common/CommonPageLayout.vue'
 import DeleteConfirmModal from '~/components/common/DeleteConfirmModal.vue'
 import InventoryDetail from '~/components/inventory/InventoryDetail.vue'
 import { useOwnedItems } from '~/composables/useOwnedItems'

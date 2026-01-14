@@ -81,6 +81,7 @@ const applyKeyword = () => {
     gap: 12px;
     align-items: center;
     width: min(980px, 100%);
+    flex-wrap: wrap;
 }
 
 .filterbar__select {
@@ -89,5 +90,14 @@ const applyKeyword = () => {
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     background: #fff;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+@media (max-width: 640px) {
+    .filterbar__select {
+        font-size: 12px;
+        padding: 0 5px;
+    }
 }
 </style>

@@ -80,7 +80,7 @@ describe('InventoryList.vue', () => {
         })
 
         expect(wrapper.find('.error').exists()).toBe(true)
-        expect(wrapper.find('.error').text()).toBe('取得に失敗しました')
+        expect(wrapper.find('.error').text()).toBe('データの取得に失敗しました。リロードしてください')
         expect(wrapper.find('.grid').exists()).toBe(false)
     })
 

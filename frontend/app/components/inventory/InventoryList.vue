@@ -1,7 +1,7 @@
 <template>
     <div class="inventory-list">
         <div v-if="loading" class="loading">読み込み中…</div>
-        <div v-else-if="error" class="error">取得に失敗しました</div>
+        <div v-else-if="error" class="error">データの取得に失敗しました。リロードしてください</div>
         <div v-else-if="items.length === 0" class="no-data">データなし</div>
         <div v-else>
             <div class="grid">
@@ -129,7 +129,8 @@ watchEffect(() => {
     padding: 12px 14px;
     flex: 1;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .goods-name {
