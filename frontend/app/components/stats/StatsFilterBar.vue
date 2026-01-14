@@ -52,11 +52,10 @@ const onMonthChange = (event: Event) => {
     flex-wrap: wrap;
     gap: 1rem;
     align-items: center;
+    justify-content: center;
     padding: 1rem;
-    background: white;
     border-radius: 8px;
     margin: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .filter-group {
@@ -111,5 +110,40 @@ const onMonthChange = (event: Event) => {
 
 .clear-button:active {
     transform: scale(0.98);
+}
+
+@media (max-width: 480px) {
+    .filter-bar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.2rem;
+        padding: 0.2rem;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .filter-group {
+        width: auto;
+        justify-content: center;
+    }
+
+    .filter-select {
+        font-size: 0.75rem;
+        padding: 0.6rem 0.6rem;
+    }
+
+    .clear-button {
+        margin-top: 0.2rem;
+        width: 50%;
+        padding: 0.2rem 0.2rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .clear-button {
+        margin-top: 0.2rem;
+        width: 80%;
+        padding: 0.1rem 0.1rem;
+    }
 }
 </style>

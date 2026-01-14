@@ -1,19 +1,18 @@
 <template>
-    <section class="page">
-        <PageTitle title="月次支出・想定金額" />
-
-        <StatsFilterBar :selected-year="selectedYear" :selected-month="selectedMonth" :available-years="availableYears"
-            @update:selected-year="selectedYear = $event" @update:selected-month="selectedMonth = $event"
-            @clear-filters="clearFilters" />
-
+    <CommonPageLayout title="月次支出・想定金額">
+        <template #filter>
+            <StatsFilterBar :selected-year="selectedYear" :selected-month="selectedMonth"
+                :available-years="availableYears" @update:selected-year="selectedYear = $event"
+                @update:selected-month="selectedMonth = $event" @clear-filters="clearFilters" />
+        </template>
         <StatsCards :selected-month="selectedMonth" :loading="loading" :error="error"
             :wishlist-monthly-stats="wishlistMonthlyStats" :monthly-stats="monthlyStats"
             :monthly-planned-stats="monthlyPlannedStats" :yearly-stats="yearlyStats" />
-    </section>
+    </CommonPageLayout>
 </template>
 
 <script setup lang="ts">
-import PageTitle from '~/components/common/PageTitle.vue'
+import CommonPageLayout from '~/components/common/CommonPageLayout.vue'
 import StatsFilterBar from '~/components/stats/StatsFilterBar.vue'
 import StatsCards from '~/components/stats/StatsCards.vue'
 import { useStats, type OwnedItemSummary, type WishItemSummary } from '~/composables/useStats'
@@ -340,7 +339,7 @@ const fetchInitialData = async () => {
         await fetchMonthData(currentYear, currentMonth)
     } catch (e) {
         console.error('Failed to fetch initial data:', e)
-        error.value = 'データの取得に失敗しました。'
+        error.value = 'データのデータの取得に失敗しました。リロードしてください。'
     } finally {
         loading.value = false
     }

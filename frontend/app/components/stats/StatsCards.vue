@@ -107,13 +107,13 @@ defineProps<{
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    padding: 1rem;
+    padding: 2rem;
 }
 
 .card {
     background: white;
     border-radius: 8px;
-    padding: 1.5rem;
+    padding: 2rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -149,7 +149,7 @@ defineProps<{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 1.25rem;
     background: #f8f9fa;
     border-radius: 6px;
     transition: background 0.2s;
@@ -162,7 +162,7 @@ defineProps<{
 
 .month,
 .year {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 600;
     color: #333;
 }
@@ -172,7 +172,7 @@ defineProps<{
 }
 
 .stats-detail .amount {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #16a34a;
     margin-bottom: 0.25rem;
@@ -184,30 +184,61 @@ defineProps<{
 }
 
 /* レスポンシブ対応 */
-@media (min-width: 768px) {
-    .stats-container {
-        padding: 2rem;
-    }
-
-    .card {
-        padding: 2rem;
-    }
-}
-
-@media (min-width: 1024px) {
+@media (max-width: 1023px) {
 
     .monthly-item,
     .yearly-item {
-        padding: 1.25rem;
+        padding: 1rem;
     }
 
     .month,
     .year {
-        font-size: 1.15rem;
+        font-size: 1.1rem;
     }
 
     .stats-detail .amount {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
     }
+}
+
+@media (max-width: 767px) {
+    .stats-container {
+        padding: 1rem;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-container {
+        padding: 1rem;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .stats-detail .amount {
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    .month,
+    .year {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .stats-detail .count {
+        font-size: 0.7rem;
+    }
+
 }
 </style>
