@@ -1,22 +1,16 @@
 <template>
-    <section class="page">
-        <div class="box">
-            <div class="box2">
-                <PageTitle title="欲しいものリスト" />
-
-                <!-- フィルタバー -->
-                <WishlistFilterBar :filters="filters" @update:filters="updateFilters" />
-            </div>
-            <!-- 欲しいものリストコンポーネント -->
-            <WishlistList :workId="null" :filters="normalizedFilters" />
-        </div>
-    </section>
+    <CommonPageLayout title="欲しいものリスト">
+        <template #filter>
+            <WishlistFilterBar :filters="filters" @update:filters="updateFilters" />
+        </template>
+        <WishlistList :workId="null" :filters="normalizedFilters" />
+    </CommonPageLayout>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from '#imports'
-import PageTitle from '~/components/common/PageTitle.vue'
+import CommonPageLayout from '~/components/common/CommonPageLayout.vue'
 import WishlistFilterBar from '~/components/wishlist/WishlistFilterBar.vue'
 import WishlistList from '~/components/wishlist/WishlistList.vue'
 import type { WishlistQuery, WishlistSort } from '~/types/wishlist'
@@ -86,11 +80,4 @@ const updateFilters = async (partial: WishlistQuery) => {
 }
 </script>
 
-<style scoped>
-.box2 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 18px 12px;
-}
-</style>
+<style scoped></style>

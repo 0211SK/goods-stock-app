@@ -9,19 +9,19 @@ const mockCreate = vi.fn()
 const mockFetchWorks = vi.fn()
 const mockFetchItemTypes = vi.fn()
 
-vi.mock('@/composables/useWorks', () => ({
+vi.mock('~/composables/useWorks', () => ({
     useWorks: () => ({
         items: [],
         fetchWorks: mockFetchWorks
     })
 }))
-vi.mock('@/composables/useItemTypes', () => ({
+vi.mock('~/composables/useItemTypes', () => ({
     useItemTypes: () => ({
         items: [],
         fetchList: mockFetchItemTypes
     })
 }))
-vi.mock('@/composables/useWishlistItems', () => ({
+vi.mock('~/composables/useWishlistItems', () => ({
     useWishlistItems: () => ({
         create: mockCreate
     })
@@ -32,9 +32,10 @@ vi.mock('#imports', () => ({
 }))
 
 // 子コンポーネントはスタブ
-vi.mock('@/components/common/PageTitle.vue', () => ({ default: { props: ['title'], template: '<div>{{ title }}</div>' } }))
-vi.mock('@/components/wishlist/WishlistForm.vue', () => ({
+vi.mock('~/components/common/PageTitle.vue', () => ({ default: { props: ['title'], template: '<div>{{ title }}</div>' } }))
+vi.mock('~/components/wishlist/WishlistForm.vue', () => ({
     default: {
+        name: 'WishlistForm',
         props: ['initialData', 'works', 'itemTypes', 'submitting', 'errorMessage'],
         emits: ['submit', 'cancel'],
         template: '<form @submit.prevent="$emit(\'submit\', $event)"><button type="submit">submit</button><button type="button" @click="$emit(\'cancel\')">cancel</button></form>'

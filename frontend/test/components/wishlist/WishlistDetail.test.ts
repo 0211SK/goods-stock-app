@@ -34,7 +34,7 @@ describe('WishlistDetail.vue', () => {
             },
         })
 
-        expect(wrapper.text()).toContain('取得に失敗しました')
+        expect(wrapper.text()).toContain('データの取得に失敗しました。リロードしてください')
         expect(wrapper.find('.detail').exists()).toBe(false)
     })
 

@@ -6,7 +6,7 @@ import WishlistIndexPage from '../../../app/pages/wishlist/index.vue'
 const mockPush = vi.fn()
 let footerButtons: any[] = []
 
-vi.mock('@/composables/useFooterButtons', () => ({
+vi.mock('~/composables/useFooterButtons', () => ({
     useFooterButtons: (btns: any[]) => {
         footerButtons = btns
         return btns
@@ -18,9 +18,9 @@ vi.mock('#imports', () => ({
 }))
 
 // 子コンポーネントはスタブ
-vi.mock('@/components/common/PageTitle.vue', () => ({ default: { props: ['title'], template: '<div>{{ title }}</div>' } }))
-vi.mock('@/components/wishlist/WishlistFilterBar.vue', () => ({ default: { template: '<div />', props: ['filters'] } }))
-vi.mock('@/components/wishlist/WishlistList.vue', () => ({ default: { template: '<div />', props: ['workId', 'filters'] } }))
+vi.mock('~/components/common/PageTitle.vue', () => ({ default: { props: ['title'], template: '<div>{{ title }}</div>' } }))
+vi.mock('~/components/wishlist/WishlistFilterBar.vue', () => ({ default: { name: 'WishlistFilterBar', template: '<div />', props: ['filters'] } }))
+vi.mock('~/components/wishlist/WishlistList.vue', () => ({ default: { name: 'WishlistList', template: '<div />', props: ['workId', 'filters'] } }))
 
 describe('WishlistIndexPage', () => {
     let wrapper: any
@@ -37,7 +37,6 @@ describe('WishlistIndexPage', () => {
     })
 
     it('フィルタバーとリストが表示される', () => {
-        // フィルタバーとリストのスタブが存在するか
         expect(wrapper.findComponent({ name: 'WishlistFilterBar' }).exists()).toBe(true)
         expect(wrapper.findComponent({ name: 'WishlistList' }).exists()).toBe(true)
     })
@@ -56,9 +55,7 @@ describe('WishlistIndexPage', () => {
     })
 
     it('update:filtersイベントでrouter.pushが呼ばれる', async () => {
-        // フィルタバーのスタブを取得
         const filterBar = wrapper.findComponent({ name: 'WishlistFilterBar' })
-        // update:filtersイベントをemit
         await filterBar.vm.$emit('update:filters', { keyword: 'abc' })
         await flushPromises()
         expect(mockPush).toHaveBeenCalled()

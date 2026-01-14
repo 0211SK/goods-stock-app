@@ -80,6 +80,8 @@ const onSortChange = (e: Event) => {
     gap: 12px;
     align-items: center;
     width: min(980px, 100%);
+    flex-wrap: wrap;
+    word-break: break-all;
 }
 
 .filterbar__select {
@@ -88,5 +90,37 @@ const onSortChange = (e: Event) => {
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     background: #fff;
+    flex: 1 1 0;
+    min-width: 120px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 500px) {
+    .filterbar__select {
+        font-size: 12px;
+        padding: 0 5px;
+    }
+
+    .filterbar__row {
+        flex-wrap: wrap;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    /* 作品セレクトだけ上に表示・幅100% */
+    .filterbar__select:first-child {
+        flex-basis: 100%;
+        min-width: 100%;
+        order: 1;
+    }
+
+    /* その他のセレクトを下に横並び */
+    .filterbar__select:nth-child(2),
+    .filterbar__select:nth-child(3) {
+        flex-basis: 48%;
+        min-width: 0;
+        order: 2;
+    }
 }
 </style>

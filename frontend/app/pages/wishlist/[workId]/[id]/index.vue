@@ -1,7 +1,5 @@
 <template>
-    <section class="page">
-        <PageTitle title="欲しいもの詳細" />
-
+    <CommonPageLayout title="欲しいもの詳細">
         <!-- 欲しいもの詳細コンポーネント -->
         <WishlistDetail :item="item" :loading="loading" :error="error" />
 
@@ -16,13 +14,13 @@
             :show-error-modal="showPurchaseErrorModal" :error-message="purchaseErrorMessage" :purchasing="purchasing"
             :current-image-url="item?.imageUrl" @confirm="confirmPurchase" @cancel="showPurchaseModal = false"
             @close-success="closePurchaseSuccessModal" @close-error="showPurchaseErrorModal = false" />
-    </section>
+    </CommonPageLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from '#imports'
-import PageTitle from '~/components/common/PageTitle.vue'
+import CommonPageLayout from '~/components/common/CommonPageLayout.vue'
 import DeleteConfirmModal from '~/components/common/DeleteConfirmModal.vue'
 import PurchaseConfirmModal from '~/components/common/PurchaseConfirmModal.vue'
 import WishlistDetail from '~/components/wishlist/WishlistDetail.vue'

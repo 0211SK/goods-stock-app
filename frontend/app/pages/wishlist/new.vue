@@ -1,18 +1,16 @@
 <template>
     <!-- 欲しいもの登録ページ -->
-    <section class="page">
-        <PageTitle title="欲しいもの登録" />
-
+    <CommonPageLayout title="欲しいもの登録">
         <!-- 欲しいもの登録フォームコンポーネント -->
         <WishlistForm :initial-data="initialData" :works="works" :item-types="itemTypes" :submitting="submitting"
             :error-message="errorMessage" @submit="onSubmit" @cancel="cancel" />
-    </section>
+    </CommonPageLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from '#imports'
-import PageTitle from '~/components/common/PageTitle.vue'
+import CommonPageLayout from '~/components/common/CommonPageLayout.vue'
 import WishlistForm, { type WishlistFormData } from '~/components/wishlist/WishlistForm.vue'
 import { useWorks } from '~/composables/useWorks'
 import { useItemTypes } from '~/composables/useItemTypes'
