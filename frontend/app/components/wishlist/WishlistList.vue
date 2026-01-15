@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watchEffect } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useWishlistItems } from '~/composables/useWishlistItems'
 import { useImageUpload } from '~/composables/useImageUpload'
 import { useRouter } from '#imports'
@@ -64,10 +64,18 @@ const goToDetail = (item: any) => {
     void router.push(`/wishlist/${wid}/${item.id}`)
 }
 
-watchEffect(() => {
-    // fetch when query changes
+// 初期表示
+onMounted(() => {
     fetchList(query.value as any)
 })
+
+// フィルターやworkIdが変わった時のみ再取得
+watch(
+    () => [props.workId, props.filters.itemTypeId, props.filters.keyword, props.filters.page, props.filters.size, props.filters.sort],
+    () => {
+        fetchList(query.value as any)
+    }
+)
 </script>
 
 <style scoped>
