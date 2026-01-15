@@ -339,7 +339,7 @@ const fetchInitialData = async () => {
         await fetchMonthData(currentYear, currentMonth)
     } catch (e) {
         console.error('Failed to fetch initial data:', e)
-        error.value = 'データのデータの取得に失敗しました。リロードしてください。'
+        error.value = 'データの取得に失敗しました。リロードしてください。'
     } finally {
         loading.value = false
     }

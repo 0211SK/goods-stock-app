@@ -2,7 +2,7 @@
     <CommonPageLayout title="欲しいもの詳細編集">
         <!-- 読み込み中・エラー表示 -->
         <div v-if="loading && !item">読み込み中…</div>
-        <div v-else-if="error && !item">データのデータの取得に失敗しました。リロードしてください</div>
+        <div v-else-if="error && !item">データの取得に失敗しました。リロードしてください</div>
 
         <!-- 編集フォーム -->
         <WishlistForm v-else-if="item" :initial-data="formData" :works="works" :item-types="itemTypes"

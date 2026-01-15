@@ -359,7 +359,7 @@ describe('GenreSection.vue', () => {
                 error: 'API error'
             }
         })
-        expect(wrapper.text()).toContain('データのデータの取得に失敗しました。リロードしてください')
+        expect(wrapper.text()).toContain('データの取得に失敗しました。リロードしてください')
     })
 
     it('エラーがない場合はエラーメッセージが表示されない', () => {
@@ -369,6 +369,6 @@ describe('GenreSection.vue', () => {
                 error: null
             }
         })
-        expect(wrapper.text()).not.toContain('データのデータの取得に失敗しました。リロードしてください')
+        expect(wrapper.text()).not.toContain('データの取得に失敗しました。リロードしてください')
     })
 })

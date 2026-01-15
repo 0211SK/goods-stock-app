@@ -88,12 +88,12 @@ describe('StatsPage', () => {
             global: {
                 stubs: {
                     StatsCards: {
-                        template: '<div data-testid="statscards">データのデータの取得に失敗しました。リロードしてください。</div>'
+                        template: '<div data-testid="statscards">データの取得に失敗しました。リロードしてください。</div>'
                     }
                 }
             }
         })
-        expect(wrapper.find('[data-testid="statscards"]').text()).toContain('データのデータの取得に失敗しました。リロードしてください。')
+        expect(wrapper.find('[data-testid="statscards"]').text()).toContain('データの取得に失敗しました。リロードしてください。')
     })
 }
 )
