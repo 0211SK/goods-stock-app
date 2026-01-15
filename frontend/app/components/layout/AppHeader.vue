@@ -113,10 +113,15 @@ const handleLogout = async () => {
     align-items: center;
     border: 1px solid #d1d5db;
     flex: 0 0 auto;
+    width: 100%;
 }
 
 .tab {
-    padding: 20px 70px;
+    flex: 1;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 14px;
     text-decoration: none;
     color: #111827;
@@ -150,6 +155,25 @@ const handleLogout = async () => {
         flex: 1;
         text-align: center;
         padding: 10px 16px;
+    }
+}
+
+@media (max-width: 360px) {
+    .header-main {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .tabs {
+        width: 100%;
+    }
+
+    .tab {
+        flex: 1;
+        text-align: center;
+        padding: 10px 16px;
+        font-size: 12px;
     }
 }
 </style>
