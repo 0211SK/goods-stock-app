@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8080',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8080',
     }
   },
 })
