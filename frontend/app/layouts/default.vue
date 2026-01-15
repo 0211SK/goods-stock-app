@@ -14,9 +14,14 @@
 import AppHeader from '~/components/layout/AppHeader.vue'
 import AppFooter from '~/components/layout/AppFooter.vue'
 import { useAutoLogout } from '~/composables/useAutoLogout'
+import { useHead } from '@unhead/vue'
 
 // 3時間の非アクティブ時に自動ログアウト
 useAutoLogout(180)
+// タブ名（タイトル）を設定
+useHead({
+    title: 'グッズ在庫管理'
+})
 </script>
 
 <style scoped>
