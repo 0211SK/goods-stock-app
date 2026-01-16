@@ -61,6 +61,21 @@ const goBack = () => {
     border-top: 1px solid #e9ecef;
     padding: 1rem;
     margin-top: auto;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+    /* 端末によってはセーフエリア対応 */
+    box-sizing: border-box;
+}
+
+/* ===== スマホ画面でフッターの高さを高くする ===== */
+@media (max-width: 767px) {
+    .app-footer {
+        padding: 1.5rem 0.5rem;
+        min-height: 80px;
+    }
 }
 
 .footer-buttons {
@@ -163,6 +178,20 @@ const goBack = () => {
         font-size: 10px;
         /* デフォルトのpadding: 0 1rem;を打ち消す */
         padding: 0 0px;
+    }
+
+    .footer-btn {
+        min-height: 56px;
+        font-size: 16px;
+        padding: 16px 12px;
+    }
+
+    .icon {
+        font-size: 22px;
+    }
+
+    .label {
+        font-size: 13px;
     }
 }
 
