@@ -36,5 +36,7 @@ useHead({
     padding: 1.5rem;
     max-width: 1024px;
     margin: 0 auto;
+    padding-bottom: 120px;
+    /* フッターの高さ+余白 */
 }
 </style>

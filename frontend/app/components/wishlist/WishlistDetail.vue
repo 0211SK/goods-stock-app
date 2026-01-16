@@ -92,12 +92,6 @@ const { getImageUrl } = useImageUpload()
     color: #6e6e6e
 }
 
-.box {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
 /* タブレット表示 */
 @media (max-width: 1100px) {
     .detail {

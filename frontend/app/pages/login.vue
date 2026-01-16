@@ -23,6 +23,16 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue'
+
+// bodyのスクロール禁止
+onMounted(() => {
+    document.body.style.overflow = 'hidden'
+})
+onUnmounted(() => {
+    document.body.style.overflow = ''
+})
+
 /**
  * ログインページ
  * メールアドレスとパスワードでSupabase認証を行う
@@ -112,5 +122,28 @@ const onSubmit = async () => {
 .login-error {
     color: red;
     text-align: center;
+}
+
+/* ===== スマホ調整 ===== */
+@media (max-width: 767px) {
+    .login-root {
+        /* h1のマージン調整 */
+        margin-top: -21px;
+        padding: 0px;
+    }
+
+    .login-input {
+        padding: 20px;
+        font-size: 18px;
+    }
+
+    .login-form {
+        width: 70%;
+    }
+
+    .login-button {
+        padding: 25px;
+        font-size: 16px;
+    }
 }
 </style>

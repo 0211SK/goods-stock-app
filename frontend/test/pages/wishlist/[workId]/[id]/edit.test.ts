@@ -41,12 +41,8 @@ describe('Wishlist EditPage', () => {
     beforeEach(async () => {
         wrapper = mount(EditPage, {
             global: {
-                stubs: {
-                    WishlistForm: {
-                        name: 'WishlistForm',
-                        template: '<div></div>'
-                    }
-                }
+                // WishlistFormのスタブをやめて実際のコンポーネントを使う
+                stubs: {}
             }
         })
         await flushPromises()

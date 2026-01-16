@@ -10,13 +10,18 @@
             </div>
         </div>
 
+        <!-- ローディング表示 -->
+        <div v-if="loading" class="genre__loading">
+            読み込み中…
+        </div>
+
         <!-- エラー表示 -->
-        <div v-if="error" class="genre__error">
+        <div v-else-if="error" class="genre__error">
             データの取得に失敗しました。リロードしてください
         </div>
 
         <!-- 一覧 -->
-        <div v-if="grouped.length === 0" class="genre__empty">
+        <div v-else-if="grouped.length === 0" class="genre__empty">
             作品が存在しません
         </div>
 
@@ -42,7 +47,8 @@ import type { WorkItem } from '~/composables/useWorks'
 
 const props = defineProps<{
     genres: WorkItem[]
-    error?: string | null
+    error: string | null
+    loading: boolean
 }>()
 
 const q = ref('')
@@ -93,15 +99,15 @@ const grouped = computed(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 28px 16px 48px;
 }
 
-.genre__error {
+.genre__error,
+.genre__loading,
+.genre__empty {
     width: min(720px, 100%);
     padding: 18px 12px;
-    color: #dc2626;
+    color: #6b7280;
     text-align: center;
-    font-weight: bold;
 }
 
 /* 検索バー */
@@ -151,14 +157,6 @@ const grouped = computed(() => {
     border-color: #9ca3af;
 }
 
-/* 0件表示 */
-.genre__empty {
-    width: min(720px, 100%);
-    padding: 18px 12px;
-    color: #6b7280;
-    text-align: center;
-}
-
 /* グループ */
 .genre__group {
     margin: 18px 0 22px;
@@ -201,12 +199,5 @@ const grouped = computed(() => {
 .genre__arrow {
     font-size: 20px;
     opacity: 0.6;
-}
-
-/* PCでも見た目を崩さない */
-@media (min-width: 1024px) {
-    .genre {
-        padding-top: 40px;
-    }
 }
 </style>
