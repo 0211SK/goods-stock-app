@@ -1,6 +1,6 @@
 <template>
     <CommonPageLayout title="グッズ作品一覧">
-        <GenreSection :genres="genres" />
+        <GenreSection :genres="genres" :error="error" :loading="loading" />
     </CommonPageLayout>
 </template>
 
@@ -13,7 +13,7 @@ import { useWorks } from '~/composables/useWorks'
 import { useFooterButtons } from '~/composables/useFooterButtons'
 
 // 作品一覧を取得するコンポーザブル（genresという名前で使用）
-const { items: genres, fetchWorks } = useWorks()
+const { items: genres, fetchWorks, error, loading } = useWorks()
 const router = useRouter()
 
 /**
