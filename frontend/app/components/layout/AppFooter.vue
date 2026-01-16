@@ -157,10 +157,12 @@ const goBack = () => {
     flex-shrink: 0;
 }
 
-@media (max-width: 640px) {
+/* ===== スマホ調整 ===== */
+@media (max-width: 767px) {
     .footer-buttons {
         font-size: 10px;
-        padding: 0 8px;
+        /* デフォルトのpadding: 0 1rem;を打ち消す */
+        padding: 0 0px;
     }
 }
 
