@@ -1,9 +1,10 @@
 <template>
-    <div>
+    <div class="inventory-form-root">
         <!-- 読み込み中・エラー表示 -->
-        <div v-if="loading && !item">読み込み中…</div>
-        <div v-else-if="error && !item">データの取得に失敗しました。リロードしてください</div>
-
+        <div v-if="(loading && !item) || (error && !item)" class="center-message">
+            <div v-if="loading && !item">読み込み中…</div>
+            <div v-else>データの取得に失敗しました。リロードしてください</div>
+        </div>
         <!-- エラーメッセージ表示エリア（フォーム用） -->
         <div v-else>
             <div v-if="errorMessage" class="error-message">
@@ -329,6 +330,18 @@ const handleCancel = () => {
     display: flex;
     justify-content: center;
     gap: 50px;
+}
+
+.inventory-form-root {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.center-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 14px;
 }
 
 .error-message {

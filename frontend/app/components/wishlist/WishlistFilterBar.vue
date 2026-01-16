@@ -67,14 +67,6 @@ const onSortChange = (e: Event) => {
     justify-content: center;
 }
 
-.box {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: min(980px, 100%);
-    padding: 12px 0;
-}
-
 .filterbar__row {
     display: flex;
     gap: 12px;

@@ -21,6 +21,12 @@ defineProps<{ title: string }>()
     padding: 18px 12px;
 }
 
+.box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .page-title {
     font-size: 24px;
     font-weight: bold;
