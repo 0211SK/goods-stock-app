@@ -1,88 +1,94 @@
 <template>
     <div>
-        <!-- エラーメッセージ表示エリア -->
-        <div v-if="errorMessage" class="error-message">
-            {{ errorMessage }}
+        <!-- 読み込み中・エラー表示 -->
+        <div v-if="loading && !item">読み込み中…</div>
+        <div v-else-if="error && !item">データの取得に失敗しました。リロードしてください</div>
+
+        <!-- エラーメッセージ表示エリア（フォーム用） -->
+        <div v-else>
+            <div v-if="errorMessage" class="error-message">
+                {{ errorMessage }}
+            </div>
+
+            <!-- 在庫登録・更新フォーム -->
+            <form class="form" @submit.prevent="handleSubmit">
+                <!-- 作品選択 -->
+                <label>作品
+                    <select v-model.number="formData.workId" required>
+                        <option value="">選択してください</option>
+                        <option v-for="w in works" :key="w.id" :value="w.id">{{ w.name }}</option>
+                    </select>
+                </label>
+
+                <!-- 種類選択 -->
+                <label>種類
+                    <select v-model.number="formData.itemTypeId" required>
+                        <option value="">選択してください</option>
+                        <option v-for="t in itemTypes" :key="t.id" :value="t.id">{{ t.name }}</option>
+                    </select>
+                </label>
+
+                <!-- グッズ名入力（最大255文字） -->
+                <label>グッズ名
+                    <input v-model="formData.goodsName" required maxlength="255" />
+                </label>
+
+                <!-- 個数入力（1以上） -->
+                <label>個数
+                    <input type="number" v-model.number="formData.quantity" min="1" required />
+                </label>
+
+                <!-- 価格入力（0円以上） -->
+                <label>価格
+                    <input type="number" v-model.number="formData.unitPrice" min="0" required />
+                </label>
+
+                <!-- 購入日入力 -->
+                <label>購入日
+                    <input type="date" v-model="formData.purchaseDate" :max="today" required />
+                </label>
+
+                <!-- 画像アップロード（オプショナル） -->
+                <div class="image-upload">
+                    <label>画像</label>
+
+                    <!-- 画像プレビュー -->
+                    <div v-if="formData.imageUrl" class="image-preview">
+                        <img :src="getImageUrl(formData.imageUrl)" alt="プレビュー" />
+                        <button type="button" class="btn-remove" @click="removeImage" :disabled="imageUploading">
+                            削除
+                        </button>
+                    </div>
+
+                    <!-- ファイル選択 -->
+                    <div v-else>
+                        <input ref="fileInput" type="file" accept="image/*" @change="onFileChange"
+                            :disabled="imageUploading" />
+                    </div>
+
+                    <!-- アップロード中表示 -->
+                    <div v-if="imageUploading" class="uploading">
+                        アップロード中...
+                    </div>
+
+                    <!-- エラー表示 -->
+                    <div v-if="imageError" class="image-error">
+                        {{ imageError }}
+                    </div>
+                </div>
+
+                <!-- メモ入力（最大1000文字、オプショナル） -->
+                <label>メモ
+                    <textarea v-model="formData.memo" maxlength="1000"></textarea>
+                </label>
+
+                <!-- 送信・キャンセルボタン -->
+                <div class="actions">
+                    <button type="submit" :disabled="submitting">{{ submitLabel }}</button>
+                    <button type="button" @click="handleCancel">キャンセル</button>
+                </div>
+            </form>
         </div>
-
-        <!-- 在庫登録・更新フォーム -->
-        <form class="form" @submit.prevent="handleSubmit">
-            <!-- 作品選択 -->
-            <label>作品
-                <select v-model.number="formData.workId" required>
-                    <option value="">選択してください</option>
-                    <option v-for="w in works" :key="w.id" :value="w.id">{{ w.name }}</option>
-                </select>
-            </label>
-
-            <!-- 種類選択 -->
-            <label>種類
-                <select v-model.number="formData.itemTypeId" required>
-                    <option value="">選択してください</option>
-                    <option v-for="t in itemTypes" :key="t.id" :value="t.id">{{ t.name }}</option>
-                </select>
-            </label>
-
-            <!-- グッズ名入力（最大255文字） -->
-            <label>グッズ名
-                <input v-model="formData.goodsName" required maxlength="255" />
-            </label>
-
-            <!-- 個数入力（1以上） -->
-            <label>個数
-                <input type="number" v-model.number="formData.quantity" min="1" required />
-            </label>
-
-            <!-- 価格入力（0円以上） -->
-            <label>価格
-                <input type="number" v-model.number="formData.unitPrice" min="0" required />
-            </label>
-
-            <!-- 購入日入力 -->
-            <label>購入日
-                <input type="date" v-model="formData.purchaseDate" :max="today" required />
-            </label>
-
-            <!-- 画像アップロード（オプショナル） -->
-            <div class="image-upload">
-                <label>画像</label>
-
-                <!-- 画像プレビュー -->
-                <div v-if="formData.imageUrl" class="image-preview">
-                    <img :src="getImageUrl(formData.imageUrl)" alt="プレビュー" />
-                    <button type="button" class="btn-remove" @click="removeImage" :disabled="imageUploading">
-                        削除
-                    </button>
-                </div>
-
-                <!-- ファイル選択 -->
-                <div v-else>
-                    <input ref="fileInput" type="file" accept="image/*" @change="onFileChange"
-                        :disabled="imageUploading" />
-                </div>
-
-                <!-- アップロード中表示 -->
-                <div v-if="imageUploading" class="uploading">
-                    アップロード中...
-                </div>
-
-                <!-- エラー表示 -->
-                <div v-if="imageError" class="image-error">
-                    {{ imageError }}
-                </div>
-            </div>
-
-            <!-- メモ入力（最大1000文字、オプショナル） -->
-            <label>メモ
-                <textarea v-model="formData.memo" maxlength="1000"></textarea>
-            </label>
-
-            <!-- 送信・キャンセルボタン -->
-            <div class="actions">
-                <button type="submit" :disabled="submitting">{{ submitLabel }}</button>
-                <button type="button" @click="handleCancel">キャンセル</button>
-            </div>
-        </form>
     </div>
 </template>
 
@@ -127,6 +133,9 @@ interface Props {
     submitting?: boolean                      // 送信中フラグ
     errorMessage?: string | null              // エラーメッセージ
     submitLabel?: string                      // 送信ボタンのラベル
+    loading?: boolean                         // 読み込み中フラグ
+    error?: string | null                     // データ取得エラー
+    item?: any | null                         // 編集対象データ
 }
 
 // Propsのデフォルト値を設定
