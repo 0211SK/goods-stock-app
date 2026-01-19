@@ -1,6 +1,6 @@
 <!-- このページは接続確認用のページ
 本番環境では表示されないようにする -->
-<template>
+<!-- <template>
     <main style="padding: 16px;">
         <h1>接続確認</h1>
 
@@ -29,14 +29,14 @@ onMounted(async () => {
         err.value = e?.data?.message || e?.message || 'failed'
     }
 })
-</script>
+</script> -->
 
 <!-- 本番用 -->
-<!-- <template></template>
+<template></template>
 <script setup lang="ts">
 import { navigateTo } from 'nuxt/app'
 
 onMounted(() => {
     navigateTo('/inventory')
 })
-</script> -->
+</script>
