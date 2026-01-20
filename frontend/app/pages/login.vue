@@ -26,8 +26,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
-import { NuxtLink } from '#components'
+import { onMounted, onUnmounted, ref } from 'vue'
+import { useAuth } from '../composables/useAuth'
+import { useRouter } from 'vue-router'
 
 // bodyのスクロール禁止
 onMounted(() => {
