@@ -4,8 +4,8 @@ import { useAuth } from '../composables/useAuth'
 
 // トークンがなければ自動でログイン画面にリダイレクト
 export default defineNuxtRouteMiddleware(async (to) => {
-    // ログインページへのアクセスは許可
-    if (to.path === '/login') return
+    // ログイン・新規登録ページへのアクセスは許可
+    if (to.path === '/login' || to.path === '/signup') return
 
     // サーバーサイドではチェックをスキップ（クライアント側で再度チェックされる）
     if (process.server) return
