@@ -23,15 +23,14 @@
 </template>
 
 <script setup lang="ts">
-
 import { ref, watch } from 'vue'
 import { useSignup } from '../composables/useSignup'
 import { useAuth } from '../composables/useAuth'
 import { useRouter } from 'vue-router'
 
-definePageMeta({
-    layout: 'auth'
-})
+if (typeof definePageMeta !== 'undefined') {
+    definePageMeta({ layout: 'auth' })
+}
 
 const email = ref('')
 const password = ref('')
