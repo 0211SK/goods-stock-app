@@ -16,8 +16,8 @@ config.global.components['nuxt-link'] = { template: '<a><slot /></a>' }
 const signupMock = vi.fn()
 const setTokenMock = vi.fn()
 const pushMock = vi.fn()
-const errorRef = ref(null)
-const responseRef = ref(null)
+const errorRef = ref<{ message: string } | null>(null)
+const responseRef = ref<{ session: { access_token: string } } | null>(null)
 
 vi.mock('../../app/composables/useSignup', () => ({
     useSignup: () => ({

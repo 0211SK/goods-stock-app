@@ -14,7 +14,7 @@
                 {{ loading ? '送信中...' : '登録' }}
             </button>
             <p v-if="error" class="login-error">{{ error.message }}</p>
-            <p v-if="response" class="signup-success">登録が完了しました！</p>
+            <p v-if="response" class="signup-success">メールを送信しました。既に登録済みの場合は、ログインまたはメールをご確認ください。</p>
         </form>
         <div class="signup-link-wrapper">
             <nuxt-link to="/login" class="signup-link">ログイン画面へ戻る</nuxt-link>
