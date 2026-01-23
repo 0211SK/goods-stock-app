@@ -44,15 +44,21 @@ const uploadImage = async (file: File): Promise<string> => {
     loading.value = true
     error.value = null
     try {
+        // ユーザーID取得（未ログイン時はエラー）
+        const { data, error: userError } = await supabase.auth.getUser()
+        const userId = data?.user?.id
+        if (!userId) throw new Error('ユーザーIDが取得できません。ログインしてください。')
         // 拡張子取得
         const ext = file.name.split('.').pop()
         // 一意なファイル名生成
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`
+        // ユーザーごとのパス
+        const userPath = `${userId}/${fileName}`
         // Supabase Storageへアップロード
-        const { error: uploadError } = await supabase.storage.from(BUCKET).upload(fileName, file)
+        const { error: uploadError } = await supabase.storage.from(BUCKET).upload(userPath, file)
         if (uploadError) throw uploadError
         // パスを返す（DB保存用）
-        return fileName
+        return userPath
     } catch (e: any) {
         console.error('uploadImage failed', e)
         error.value = e?.message ?? String(e)

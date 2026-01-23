@@ -1,9 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import useImageUpload from '../../app/composables/useImageUpload'
-
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 describe('useImageUpload (Supabase Storage)', () => {
-    let uploadMock: any, removeMock: any, getPublicUrlMock: any
+    let uploadMock: any, removeMock: any, getPublicUrlMock: any, getUserMock: any, createClientMock: any
 
     beforeEach(() => {
         // useRuntimeConfigのモック
@@ -17,27 +15,33 @@ describe('useImageUpload (Supabase Storage)', () => {
         uploadMock = vi.fn()
         removeMock = vi.fn()
         getPublicUrlMock = vi.fn()
+        getUserMock = vi.fn(() => ({ data: { user: { id: 'user-123' } }, error: null }))
         const fromMock = vi.fn(() => ({
             upload: uploadMock,
             remove: removeMock,
             getPublicUrl: getPublicUrlMock,
         }))
         const storageMock = { from: fromMock }
-        const createClientMock = vi.fn(() => ({ storage: storageMock }))
-        // supabase-jsのcreateClientを上書き
+        const authMock = { getUser: getUserMock }
+        createClientMock = vi.fn(() => ({ storage: storageMock, auth: authMock }))
+        vi.resetModules()
         vi.doMock('@supabase/supabase-js', () => ({ createClient: createClientMock }))
     })
 
+    afterEach(() => {
+        vi.resetModules()
+        vi.clearAllMocks()
+    })
 
     describe('uploadImage', () => {
         it('画像を正常にアップロードする', async () => {
-            // 成功時はerror: null
             uploadMock.mockResolvedValue({ error: null })
             const { uploadImage } = (await import('../../app/composables/useImageUpload')).default()
             const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' })
             const result = await uploadImage(file)
             expect(typeof result).toBe('string')
             expect(uploadMock).toHaveBeenCalled()
+            expect(getUserMock).toHaveBeenCalled()
         })
 
         it('エラー時に例外をスローする', async () => {
@@ -46,6 +50,13 @@ describe('useImageUpload (Supabase Storage)', () => {
             const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' })
             await expect(uploadImage(file)).rejects.toThrow()
             expect(error.value).toBeTruthy()
+        })
+
+        it('未ログイン時は例外をスローする', async () => {
+            getUserMock.mockResolvedValue({ data: { user: null }, error: null })
+            const { uploadImage } = (await import('../../app/composables/useImageUpload')).default()
+            const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' })
+            await expect(uploadImage(file)).rejects.toThrow('ユーザーIDが取得できません。ログインしてください。')
         })
     })
 
