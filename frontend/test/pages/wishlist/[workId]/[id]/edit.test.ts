@@ -1,8 +1,19 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import EditPage from '../../../../../app/pages/wishlist/[workId]/[id]/edit.vue'
 import WishlistForm from '../../../../../app/components/wishlist/WishlistForm.vue'
+
+vi.mock('@/composables/useImageUpload', () => {
+    const mock = {
+        uploadImage: vi.fn(),
+        deleteImage: vi.fn(),
+        getImageUrl: vi.fn(),
+    }
+    return {
+        default: () => mock,
+        useImageUpload: () => mock,
+    }
+})
 
 // updateSpyをグローバルで定義
 const updateSpy = vi.fn()

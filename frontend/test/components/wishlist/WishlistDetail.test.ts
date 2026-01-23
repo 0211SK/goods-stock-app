@@ -6,7 +6,7 @@ import WishlistDetail from '../../../app/components/wishlist/WishlistDetail.vue'
 const mockGetImageUrl = vi.fn((path: string) => `http://localhost:8080${path}`)
 
 vi.mock('../../../app/composables/useImageUpload', () => ({
-    useImageUpload: () => ({
+    default: () => ({
         getImageUrl: mockGetImageUrl,
     }),
 }))

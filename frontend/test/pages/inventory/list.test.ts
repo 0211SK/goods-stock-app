@@ -2,6 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import InventoryListPage from '../../../app/pages/inventory/[id].vue'
 
+vi.mock('../../../app/composables/useImageUpload', () => ({
+    useImageUpload: () => ({
+        uploadImage: vi.fn(),
+        deleteImage: vi.fn(),
+        getImageUrl: vi.fn(),
+    }),
+}))
 // 必要なcomposableのモック
 vi.mock('../../../app/composables/useWorks', () => ({
     useWorks: () => ({

@@ -95,7 +95,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue'
-import { useImageUpload } from '~/composables/useImageUpload'
+import useImageUpload from '~/composables/useImageUpload'
 
 /**
  * 在庫フォームのデータ型

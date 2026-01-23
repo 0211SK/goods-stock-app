@@ -9,6 +9,18 @@ const mockCreateOwnedItem = vi.fn()
 const mockDeleteOwnedItem = vi.fn()
 const mockPush = vi.fn()
 
+vi.mock('@/composables/useImageUpload', () => {
+    const mock = {
+        uploadImage: vi.fn(),
+        deleteImage: vi.fn(),
+        getImageUrl: vi.fn(),
+    }
+    return {
+        default: () => mock,
+        useImageUpload: () => mock,
+    }
+})
+
 vi.mock('@/composables/useWishlistItems', () => ({
     useWishlistItems: () => ({
         loading: false,

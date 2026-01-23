@@ -6,7 +6,7 @@ import InventoryDetail from '../../../app/components/inventory/InventoryDetail.v
 const mockGetImageUrl = vi.fn((path: string) => `http://localhost:8080${path}`)
 
 vi.mock('../../../app/composables/useImageUpload', () => ({
-    useImageUpload: () => ({
+    default: () => ({
         getImageUrl: mockGetImageUrl,
     }),
 }))
