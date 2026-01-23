@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { useImageUpload } from '~/composables/useImageUpload'
+import useImageUpload from '~/composables/useImageUpload'
 
 defineProps<{
     item: any | null

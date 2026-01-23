@@ -3,9 +3,9 @@ import { mount } from '@vue/test-utils'
 import InventoryForm from '../../../app/components/inventory/InventoryForm.vue'
 import type { InventoryFormData } from '../../../app/components/inventory/InventoryForm.vue'
 
-// useImageUploadをモック
+// useImageUploadをdefaultエクスポートでモック
 vi.mock('../../../app/composables/useImageUpload', () => ({
-    useImageUpload: () => ({
+    default: () => ({
         uploadImage: vi.fn().mockResolvedValue('/uploads/test.jpg'),
         deleteImage: vi.fn().mockResolvedValue(undefined),
         validateImageFile: vi.fn().mockReturnValue(null),

@@ -2,6 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import EditPage from '../../../app/pages/inventory/[workId]/[id]/edit.vue'
 
+vi.mock('../../../app/composables/useImageUpload', () => ({
+    default: () => ({
+        uploadImage: vi.fn(),
+        deleteImage: vi.fn(),
+        getImageUrl: vi.fn(),
+    }),
+}))
 // 必要なモック
 vi.mock('../../../app/composables/useWorks', () => ({
     useWorks: () => ({
@@ -22,6 +29,9 @@ vi.mock('../../../app/composables/useOwnedItems', () => ({
         fetchDetail: vi.fn(async () => ({ id: 1, workId: 2, itemTypeId: 3, goodsName: 'test', quantity: 1, unitPrice: 100, purchaseDate: '2026-01-01', imageUrl: null, memo: null })),
         update: vi.fn()
     })
+}))
+vi.mock('../../../app/composables/useFooterButtons', () => ({
+    useFooterButtons: vi.fn()
 }))
 
 // #importsのモック
