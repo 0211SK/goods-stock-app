@@ -79,6 +79,46 @@ describe('GenreSection.vue', () => {
         expect(groupTexts).toContain('さ')
     })
 
+    it('濁音・半濁音が正しいグループに分類される', () => {
+        const wrapper = mount(GenreSection, {
+            props: {
+                genres: [
+                    { id: 1, name: 'だんご', nameKana: 'だんご' }, // た行
+                    { id: 2, name: 'ぱんだ', nameKana: 'ぱんだ' }, // は行
+                    { id: 3, name: 'ばなな', nameKana: 'ばなな' }, // は行
+                    { id: 4, name: 'がっこう', nameKana: 'がっこう' }, // か行
+                    { id: 5, name: 'ぞう', nameKana: 'ぞう' }, // さ行
+                ],
+            },
+            global: {
+                stubs: {
+                    NuxtLink: {
+                        template: '<a :href="to"><slot /></a>',
+                        props: ['to'],
+                    },
+                },
+            },
+        })
+
+        const groupKeys = wrapper.findAll('.genre__group-key').map(g => g.text())
+        expect(groupKeys).toContain('た') // だんご→た行
+        expect(groupKeys).toContain('は') // ぱんだ・ばなな→は行
+        expect(groupKeys).toContain('か') // がっこう→か行
+        expect(groupKeys).toContain('さ') // ぞう→さ行
+
+        // それぞれのグループ内に正しい作品が含まれるか
+        const groupMap: Record<string, string[]> = {}
+        wrapper.findAll('.genre__group').forEach(group => {
+            const key = group.find('.genre__group-key').text()
+            const names = group.findAll('.genre__name').map(n => n.text())
+            groupMap[key] = names
+        })
+        expect(groupMap['た']).toContain('だんご')
+        expect(groupMap['は']).toEqual(expect.arrayContaining(['ぱんだ', 'ばなな']))
+        expect(groupMap['か']).toContain('がっこう')
+        expect(groupMap['さ']).toContain('ぞう')
+    })
+
     it('検索入力が動作する', async () => {
         const wrapper = mount(GenreSection, {
             props: {

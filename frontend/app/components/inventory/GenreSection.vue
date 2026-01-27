@@ -55,10 +55,22 @@ const q = ref('')
 
 const normalizeKana = (s: string) => s.trim().toLowerCase()
 
+// 濁音・半濁音を清音に変換するマップ
+const DAKUON_MAP: Record<string, string> = {
+    'が': 'か', 'ぎ': 'き', 'ぐ': 'く', 'げ': 'け', 'ご': 'こ',
+    'ざ': 'さ', 'じ': 'し', 'ず': 'す', 'ぜ': 'せ', 'ぞ': 'そ',
+    'だ': 'た', 'ぢ': 'ち', 'づ': 'つ', 'で': 'て', 'ど': 'と',
+    'ば': 'は', 'び': 'ひ', 'ぶ': 'ふ', 'べ': 'へ', 'ぼ': 'ほ',
+    'ぱ': 'は', 'ぴ': 'ひ', 'ぷ': 'ふ', 'ぺ': 'へ', 'ぽ': 'ほ',
+}
+
 const groupKeyByKana = (kanaFirst: string | null | undefined) => {
     if (!kanaFirst) return 'その他'
-    const k = normalizeKana(kanaFirst).slice(0, 1)
-
+    let k = normalizeKana(kanaFirst).slice(0, 1)
+    // 濁音・半濁音を清音に変換
+    if (DAKUON_MAP[k] !== undefined) {
+        k = DAKUON_MAP[k] as string
+    }
     for (const row of GOJUON) {
         if (row.chars.includes(k)) return row.key
     }
