@@ -257,21 +257,25 @@ const onFileChange = async (e: Event) => {
 
 /**
  * 画像削除処理
+ * Supabase Storageからも画像を削除する
  */
 const removeImage = async () => {
-    if (!formData.value.imageUrl) return
+    if (!formData.value.imageUrl) {
+        // 入力欄だけリセット
+        if (fileInput.value) fileInput.value.value = ''
+        return
+    }
 
     try {
+        // Supabase Storageから画像を削除
         await deleteImage(formData.value.imageUrl)
-        formData.value.imageUrl = null
-
-        // ファイル入力をリセット
-        if (fileInput.value) {
-            fileInput.value.value = ''
-        }
     } catch (e: any) {
         console.error('画像削除エラー:', e)
         alert('画像の削除に失敗しました')
+    } finally {
+        // フォームデータとファイル入力をリセット
+        formData.value.imageUrl = null
+        if (fileInput.value) fileInput.value.value = ''
     }
 }
 

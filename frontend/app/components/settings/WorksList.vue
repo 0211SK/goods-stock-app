@@ -8,14 +8,17 @@
         <div v-else-if="error" class="error">{{ error }}</div>
         <div v-else-if="items.length === 0" class="empty">作品がまだ登録されていません</div>
         <div v-else class="works-list">
-            <div v-for="work in items" :key="work.id" class="work-card">
-                <div class="work-info">
-                    <h3>{{ work.name }}</h3>
-                    <p v-if="work.nameKana" class="kana">{{ work.nameKana }}</p>
-                </div>
-                <div class="work-actions">
-                    <button class="btn-edit" @click="$emit('edit', work)">編集</button>
-                    <button class="btn-delete" @click="$emit('delete', work)">削除</button>
+            <div v-for="group in grouped" :key="group.key" class="works-group">
+                <div class="works-group-key">{{ group.key }}</div>
+                <div v-for="work in group.items" :key="work.id" class="work-card">
+                    <div class="work-info">
+                        <h3>{{ work.name }}</h3>
+                        <p v-if="work.nameKana" class="kana">{{ work.nameKana }}</p>
+                    </div>
+                    <div class="work-actions">
+                        <button class="btn-edit" @click="$emit('edit', work)">編集</button>
+                        <button class="btn-delete" @click="$emit('delete', work)">削除</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -23,9 +26,11 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { GOJUON } from '~/constants/gojuon'
 import type { WorkItem } from '~/composables/useWorks'
 
-defineProps<{
+const props = defineProps<{
     items: WorkItem[]
     loading: boolean
     error: string | null
@@ -36,6 +41,45 @@ defineEmits<{
     edit: [work: WorkItem]
     delete: [work: WorkItem]
 }>()
+
+const DAKUON_MAP: Record<string, string> = {
+    'が': 'か', 'ぎ': 'き', 'ぐ': 'く', 'げ': 'け', 'ご': 'こ',
+    'ざ': 'さ', 'じ': 'し', 'ず': 'す', 'ぜ': 'せ', 'ぞ': 'そ',
+    'だ': 'た', 'ぢ': 'ち', 'づ': 'つ', 'で': 'て', 'ど': 'と',
+    'ば': 'は', 'び': 'ひ', 'ぶ': 'ふ', 'べ': 'へ', 'ぼ': 'ほ',
+    'ぱ': 'は', 'ぴ': 'ひ', 'ぷ': 'ふ', 'ぺ': 'へ', 'ぽ': 'ほ',
+}
+
+const normalizeKana = (s: string) => s.trim().toLowerCase()
+
+const groupKeyByKana = (kanaFirst: string | null | undefined) => {
+    if (!kanaFirst) return 'その他'
+    let k = normalizeKana(kanaFirst).slice(0, 1)
+    if (DAKUON_MAP[k]) {
+        k = DAKUON_MAP[k] ?? k
+    }
+    for (const row of GOJUON) {
+        if (row.chars.includes(k)) return row.key
+    }
+    return 'その他'
+}
+
+const grouped = computed(() => {
+    const map = new Map<string, WorkItem[]>()
+    for (const g of props.items) {
+        const key = groupKeyByKana(g.nameKana?.slice(0, 1))
+        const arr = map.get(key) ?? []
+        arr.push(g)
+        map.set(key, arr)
+    }
+    const order = [...GOJUON.map(x => x.key), 'その他']
+    return order
+        .map(key => ({
+            key,
+            items: (map.get(key) ?? []).sort((a, b) => a.name.localeCompare(b.name, 'ja')),
+        }))
+        .filter(x => x.items.length > 0)
+})
 </script>
 
 <style scoped>
@@ -93,6 +137,7 @@ defineEmits<{
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     transition: box-shadow 0.2s;
+    margin-top: 10px;
 }
 
 .work-card:hover {
@@ -142,6 +187,14 @@ defineEmits<{
 
 .btn-delete:hover {
     background: #d32f2f;
+}
+
+.works-group-key {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    padding-left: 4px;
 }
 
 @media (max-width: 480px) {

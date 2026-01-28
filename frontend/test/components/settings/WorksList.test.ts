@@ -83,6 +83,40 @@ describe('WorksList.vue', () => {
             expect(workCards[2].find('h3').text()).toBe('バンドリ')
         })
 
+        it('五十音グループごとに正しく表示される（濁音・半濁音含む）', () => {
+            const works: WorkItem[] = [
+                { id: 1, name: 'だんご', nameKana: 'だんご', memo: null }, // た行
+                { id: 2, name: 'ぱんだ', nameKana: 'ぱんだ', memo: null }, // は行
+                { id: 3, name: 'ばなな', nameKana: 'ばなな', memo: null }, // は行
+                { id: 4, name: 'がっこう', nameKana: 'がっこう', memo: null }, // か行
+                { id: 5, name: 'ぞう', nameKana: 'ぞう', memo: null }, // さ行
+                { id: 6, name: 'アイドル', nameKana: 'あいどる', memo: null }, // あ行
+            ]
+            const wrapper = mount(WorksList, {
+                props: { items: works, loading: false, error: null },
+            })
+            // グループキーを取得
+            const groupKeys = wrapper.findAll('.works-group-key').map(g => g.text())
+            expect(groupKeys).toContain('た') // だんご→た行
+            expect(groupKeys).toContain('は') // ぱんだ・ばなな→は行
+            expect(groupKeys).toContain('か') // がっこう→か行
+            expect(groupKeys).toContain('さ') // ぞう→さ行
+            expect(groupKeys).toContain('あ') // アイドル→あ行
+
+            // グループ内の作品名を検証
+            const groupMap: Record<string, string[]> = {}
+            wrapper.findAll('.works-group').forEach(group => {
+                const key = group.find('.works-group-key').text()
+                const names = group.findAll('.work-info h3').map(n => n.text())
+                groupMap[key] = names
+            })
+            expect(groupMap['た']).toContain('だんご')
+            expect(groupMap['は']).toEqual(expect.arrayContaining(['ぱんだ', 'ばなな']))
+            expect(groupMap['か']).toContain('がっこう')
+            expect(groupMap['さ']).toContain('ぞう')
+            expect(groupMap['あ']).toContain('アイドル')
+        })
+
         it('nameKanaがある場合はよみがなが表示される', () => {
             const wrapper = mount(WorksList, {
                 props: { ...defaultProps, items: mockWorks },

@@ -27,6 +27,7 @@ import WishlistDetail from '~/components/wishlist/WishlistDetail.vue'
 import { useWishlistItems } from '~/composables/useWishlistItems'
 import { useOwnedItems } from '~/composables/useOwnedItems'
 import { useFooterButtons } from '~/composables/useFooterButtons'
+import useImageUpload from '~/composables/useImageUpload'
 
 const route = useRoute()
 const router = useRouter()
@@ -35,6 +36,7 @@ const workId = Number(route.params.workId)
 
 const item = ref<any | null>(null)
 const { loading, error, fetchDetail, deleteItem: deleteItemApi } = useWishlistItems()
+const { deleteImage } = useImageUpload()
 const { create: createOwnedItem, deleteItem: deleteOwnedItem } = useOwnedItems()
 
 // 削除関連
@@ -80,6 +82,16 @@ const confirmPurchase = async (newImageUrl: string | null) => {
     let createdOwnedItemId: number | null = null
 
     try {
+        // 新しい画像がアップロードされた場合は古い画像を削除
+        if (newImageUrl && item.value.imageUrl && newImageUrl !== item.value.imageUrl) {
+            try {
+                await deleteImage(item.value.imageUrl)
+            } catch (e) {
+                // 画像削除失敗は致命的でないので警告のみ
+                console.warn('古い画像の削除に失敗しました', e)
+            }
+        }
+
         // 欲しいものデータを在庫データに変換
         const ownedItemPayload = {
             workId: item.value.workId,
@@ -147,6 +159,15 @@ const deleteItem = () => {
 const confirmDelete = async () => {
     deleting.value = true
     try {
+        // 画像があればSupabase Storageからも削除
+        if (item.value && item.value.imageUrl) {
+            try {
+                await deleteImage(item.value.imageUrl)
+            } catch (e) {
+                // 画像削除失敗は致命的でないので警告のみ
+                console.warn('画像の削除に失敗しました', e)
+            }
+        }
         await deleteItemApi(id)
         showDeleteModal.value = false
         // 削除成功メッセージを表示
