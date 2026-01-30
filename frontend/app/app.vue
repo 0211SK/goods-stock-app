@@ -19,11 +19,15 @@
  * 全ページ共通のローディング画面を制御する
  */
 import { ref, onMounted } from 'vue'
+import { useAutoLogout } from './composables/useAutoLogout'
 
 // 認証チェック中かどうかを管理するフラグ
 // true: ローディング画面を表示
 // false: 通常のコンテンツを表示
 const isAuthChecking = ref(true)
+
+// 自動ログアウト監視を開始
+useAutoLogout()
 
 // コンポーネントがマウントされた時に実行
 onMounted(() => {
